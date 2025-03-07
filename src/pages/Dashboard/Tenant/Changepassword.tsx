@@ -46,15 +46,10 @@ const ChangePassword = () => {
     }
   };
 
-  // Teal Color Palette
-  const tealColors = {
-    primary: "#0F766E", // Deep Teal
-    secondary: "#14B8A6", // Bright Teal
-    background: "#CCFBF1", // Light Teal
-    text: {
-      primary: "#134E4A", // Dark Teal
-      secondary: "#115E59", // Slightly Lighter Dark Teal
-    },
+  const blueColors = {
+    primary: "#1E3A8A", // Deep Blue
+    secondary: "#2563EB", // Vibrant Blue
+    background: "#EFF6FF", // Light Blue
   };
 
   return (
@@ -69,14 +64,14 @@ const ChangePassword = () => {
         style={{
           background: "rgba(255, 255, 255, 0.9)",
           backdropFilter: "blur(10px)",
-          border: `1px solid ${tealColors.secondary}`,
+          border: `1px solid ${blueColors.secondary}`,
         }}
       >
         <div className="text-center mb-6 sm:mb-8">
           <div
             className="mx-auto mb-4 sm:mb-6 w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full shadow-lg"
             style={{
-              background: `linear-gradient(135deg, ${tealColors.primary} 0%, ${tealColors.secondary} 100%)`,
+              background: `linear-gradient(135deg, ${blueColors.primary} 0%, ${blueColors.secondary} 100%)`,
             }}
           >
             <KeyOutlined className="text-3xl sm:text-4xl text-white" />
@@ -85,7 +80,7 @@ const ChangePassword = () => {
             level={3}
             className="text-center mb-2 text-2xl sm:text-3xl"
             style={{
-              color: tealColors.text.primary,
+              color: blueColors.primary,
               letterSpacing: "-0.5px",
             }}
           >
@@ -93,7 +88,7 @@ const ChangePassword = () => {
           </Typography.Title>
           <Typography.Text
             className="text-center block text-sm sm:text-base"
-            style={{ color: tealColors.text.secondary }}
+            style={{ color: blueColors.secondary }}
           >
             Secure your account with a new password
           </Typography.Text>
@@ -108,7 +103,7 @@ const ChangePassword = () => {
             label={
               <span
                 className="font-medium text-sm sm:text-base"
-                style={{ color: tealColors.text.primary }}
+                style={{ color: blueColors.primary }}
               >
                 Old Password
               </span>
@@ -128,7 +123,7 @@ const ChangePassword = () => {
                   }
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
-                    boxShadow: `0 4px 6px rgba(${tealColors.primary}, 0.1)`,
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
                   }}
                 />
               )}
@@ -139,7 +134,7 @@ const ChangePassword = () => {
             label={
               <span
                 className="font-medium text-sm sm:text-base"
-                style={{ color: tealColors.text.primary }}
+                style={{ color: blueColors.primary }}
               >
                 New Password
               </span>
@@ -159,7 +154,7 @@ const ChangePassword = () => {
                   }
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
-                    boxShadow: `0 4px 6px rgba(${tealColors.primary}, 0.1)`,
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
                   }}
                 />
               )}
@@ -172,9 +167,9 @@ const ChangePassword = () => {
             block
             className="!rounded-xl !py-3 mt-4 sm:mt-6 transform transition-all hover:scale-105"
             style={{
-              background: `linear-gradient(135deg, ${tealColors.primary} 0%, ${tealColors.secondary} 100%)`,
+              background: `linear-gradient(135deg, ${blueColors.primary} 0%, ${blueColors.secondary} 100%)`,
               border: "none",
-              boxShadow: `0 6px 12px rgba(${tealColors.primary}, 0.25)`,
+              boxShadow: `0 6px 12px rgba(${blueColors.primary}, 0.25)`,
               fontSize: "0.875rem",
             }}
           >
@@ -185,7 +180,7 @@ const ChangePassword = () => {
         <div className="text-center mt-4 sm:mt-6 px-4 sm:px-6">
           <Typography.Text
             className="text-xs sm:text-sm"
-            style={{ color: tealColors.text.secondary }}
+            style={{ color: blueColors.secondary }}
           >
             {/* Password must be at least 6 characters long */}
           </Typography.Text>

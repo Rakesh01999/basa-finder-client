@@ -49,16 +49,12 @@ const UpdateProfile = () => {
     }
   };
 
-  // Teal Theme
-  const tealColors = {
-    primary: "#0F766E",
-    secondary: "#14B8A6",
-    background: "#CCFBF1",
-    text: {
-      primary: "#134E4A",
-      secondary: "#115E59",
-    },
+  const blueColors = {
+    primary: "#1E3A8A", // Deep Blue
+    secondary: "#2563EB", // Vibrant Blue
+    background: "#EFF6FF", // Light Blue
   };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
@@ -71,14 +67,14 @@ const UpdateProfile = () => {
         style={{
           background: "rgba(255, 255, 255, 0.9)",
           backdropFilter: "blur(10px)",
-          border: `1px solid ${tealColors.secondary}`,
+          border: `1px solid ${blueColors.secondary}`,
         }}
       >
         <div className="text-center mb-6 sm:mb-8">
           <div
             className="mx-auto mb-4 sm:mb-6 w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full shadow-lg"
             style={{
-              background: `linear-gradient(135deg, ${tealColors.primary} 0%, ${tealColors.secondary} 100%)`,
+              background: `linear-gradient(135deg, ${blueColors.primary} 0%, ${blueColors.secondary} 100%)`,
             }}
           >
             <UserOutlined className="text-3xl sm:text-4xl text-white" />
@@ -87,7 +83,7 @@ const UpdateProfile = () => {
             level={3}
             className="text-center mb-2 text-2xl sm:text-3xl"
             style={{
-              color: tealColors.text.primary,
+              color: blueColors.primary,
               letterSpacing: "-0.5px",
             }}
           >
@@ -95,7 +91,7 @@ const UpdateProfile = () => {
           </Typography.Title>
           <Typography.Text
             className="text-center block text-sm sm:text-base"
-            style={{ color: tealColors.text.secondary }}
+            style={{ color: blueColors.secondary }}
           >
             Keep your profile up-to-date
           </Typography.Text>
@@ -111,7 +107,7 @@ const UpdateProfile = () => {
             label={
               <span
                 className="font-medium text-sm sm:text-base"
-                style={{ color: tealColors.text.primary }}
+                style={{ color: blueColors.primary }}
               >
                 Full Name
               </span>
@@ -128,7 +124,7 @@ const UpdateProfile = () => {
                   prefix={<UserOutlined className="text-gray-400" />}
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
-                    boxShadow: `0 4px 6px rgba(${tealColors.primary}, 0.1)`,
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
                   }}
                 />
               )}
@@ -140,7 +136,7 @@ const UpdateProfile = () => {
             label={
               <span
                 className="font-medium text-sm sm:text-base"
-                style={{ color: tealColors.text.primary }}
+                style={{ color: blueColors.primary }}
               >
                 Phone Number
               </span>
@@ -157,7 +153,7 @@ const UpdateProfile = () => {
                   prefix={<PhoneOutlined className="text-gray-400" />}
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
-                    boxShadow: `0 4px 6px rgba(${tealColors.primary}, 0.1)`,
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
                   }}
                 />
               )}
@@ -169,7 +165,7 @@ const UpdateProfile = () => {
             label={
               <span
                 className="font-medium text-sm sm:text-base"
-                style={{ color: tealColors.text.primary }}
+                style={{ color: blueColors.primary }}
               >
                 Address
               </span>
@@ -186,7 +182,7 @@ const UpdateProfile = () => {
                   prefix={<HomeOutlined className="text-gray-400" />}
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
-                    boxShadow: `0 4px 6px rgba(${tealColors.primary}, 0.1)`,
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
                   }}
                 />
               )}
@@ -200,9 +196,9 @@ const UpdateProfile = () => {
             block
             className="!rounded-xl !py-3 mt-4 sm:mt-6 transform transition-all hover:scale-105"
             style={{
-              background: `linear-gradient(135deg, ${tealColors.primary} 0%, ${tealColors.secondary} 100%)`,
+              background: `linear-gradient(135deg, ${blueColors.primary} 0%, ${blueColors.secondary} 100%)`,
               border: "none",
-              boxShadow: `0 6px 12px rgba(${tealColors.primary}, 0.25)`,
+              boxShadow: `0 6px 12px rgba(${blueColors.primary}, 0.25)`,
               fontSize: "0.875rem",
             }}
           >
