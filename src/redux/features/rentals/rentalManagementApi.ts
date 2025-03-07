@@ -147,6 +147,7 @@ const rentalManagementApi = baseApi.injectEndpoints({
 
     deleteListing: builder.mutation({
       query: ({ listingId }) => {
+        console.log(listingId);
         return {
           url: `/landlords/listings/${listingId}`,
           method: "DELETE",

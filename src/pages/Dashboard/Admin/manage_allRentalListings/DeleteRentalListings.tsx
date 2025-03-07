@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import {  TQueryParam } from "../../../../types";
-import { useGetAllListingsQuery } from "../../../../redux/features/rentals/rentalManagementApi";
+import { TQueryParam } from "../../../../types";
+import {
+  useGetAllListingsQuery,
+  useDeleteListingMutation,
+} from "../../../../redux/features/rentals/rentalManagementApi";
 import {
   Button,
   Input,
@@ -11,38 +14,33 @@ import {
   type TableProps,
   Card,
   Spin,
+  Modal,
+  message,
 } from "antd";
-import { useNavigate } from "react-router-dom";
-import { SearchOutlined } from "@ant-design/icons";
-// import "./pagination.css";
+// import { useNavigate } from "react-router-dom";
+import { SearchOutlined, ExclamationCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import "../../../pagination.css";
 
-// export type TTableData = Pick<
-//   TRentalListing,
-//   "location" | "rentAmount" | "bedrooms" | "amenities"
-// > & { key: string };
 export type TTableData = {
   key: string;
   location: string;
   rentAmount: number;
   bedrooms: number;
-  // amenities: string[]; // ✅ Keep as an array
 };
 
-
-const AllListings = () => {
+const DeleteRentalListings = () => {
   const [params] = useState<TQueryParam[] | undefined>(undefined);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredData, setFilteredData] = useState<TTableData[]>([]);
-  const navigate = useNavigate();
-
-  // Fetch all rental listings
+  // const navigate = useNavigate();
+  const { confirm } = Modal;
   const { data: listingsData, isFetching } = useGetAllListingsQuery([
     ...(params || []),
     { name: "page", value: pagination.current.toString() },
     { name: "limit", value: pagination.pageSize.toString() },
   ]);
+  const [deleteListing] = useDeleteListingMutation();
 
   const tableData: TTableData[] | undefined = listingsData?.data?.map(
     ({ _id, location, rentAmount, bedrooms, amenities }) => ({
@@ -54,13 +52,11 @@ const AllListings = () => {
     })
   );
 
-  // **Real-time Filtering on Search**
   useEffect(() => {
     if (searchTerm) {
       const filtered = tableData?.filter(
         (item) =>
           item.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          // item.amenities.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.rentAmount.toString().includes(searchTerm)
       );
       setFilteredData(filtered || []);
@@ -69,7 +65,26 @@ const AllListings = () => {
     }
   }, [searchTerm, listingsData]);
 
-  // Table Columns
+  const showDeleteConfirm = (listingId: string) => {
+    confirm({
+      title: "Are you sure you want to delete this listing?",
+      icon: <ExclamationCircleOutlined />,
+      content: "This action cannot be undone.",
+      okText: "Yes, Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      async onOk() {
+        try {
+          await deleteListing({ listingId }).unwrap();
+          message.success("Listing deleted successfully");
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+        } catch (error) {
+          message.error("Failed to delete listing. Please try again.");
+        }
+      },
+    });
+  };
+
   const columns: TableColumnsType<TTableData> = [
     { title: "Location", key: "location", dataIndex: "location" },
     {
@@ -84,63 +99,54 @@ const AllListings = () => {
     },
     { title: "Bedrooms", key: "bedrooms", dataIndex: "bedrooms" },
     { title: "Amenities", key: "amenities", dataIndex: "amenities" },
-    // {
-    //   title: "Action",
-    //   key: "x",
-    //   render: (record: TTableData) => (
-    //     <Button
-    //       onClick={() => navigate(`/listings/${record.key}`)}
-    //       className="transition-all duration-300 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
-    //     >
-    //       Edit
-    //     </Button>
-    //   ),
-    // },
     {
       title: "Action",
-      key: "x",
+      key: "actions",
       render: (record: TTableData) => (
-        <Button
-          onClick={() => navigate(`/dashboard/edit-listing/${record.key}`)} // 🔹 Ensure it navigates correctly
-          className="transition-all duration-300 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
-        >
-          Edit
-        </Button>
+        <div className="flex gap-2">
+          {/* <Button
+            onClick={() => navigate(`/dashboard/edit-listing/${record.key}`)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
+          >
+            Edit
+          </Button> */}
+          <Button
+            // danger
+            onClick={() => showDeleteConfirm(record.key)}
+            icon={<DeleteOutlined />}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
+          >
+            Delete
+          </Button>
+        </div>
       ),
-    }    
+    },
   ];
 
-  // Pagination handler
   const onChange: TableProps<TTableData>["onChange"] = (paginationConfig) => {
     const { current, pageSize } = paginationConfig;
     setPagination({ current: current!, pageSize: pageSize! });
   };
 
-  // Search handler
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  // Blue Theme
   const blueColors = {
-    primary: "#1E3A8A", // Deep Blue
-    secondary: "#2563EB", // Vibrant Blue
-    background: "#EFF6FF", // Light Blue
+    primary: "#1E3A8A",
+    secondary: "#2563EB",
+    background: "#EFF6FF",
   };
 
   return (
     <div
       className="min-h-screen flex flex-col items-center px-5 py-6"
-      style={{
-        background: `linear-gradient(135deg, ${blueColors.background} 0%, ${blueColors.secondary} 100%)`,
-      }}
+      style={{ background: blueColors.background }}
     >
-      {/* Title Card */}
       <Card
         className="w-full max-w-3xl text-center shadow-lg mb-6"
         style={{
           background: "rgba(255, 255, 255, 0.9)",
-          backdropFilter: "blur(10px)",
           border: `1px solid ${blueColors.secondary}`,
         }}
       >
@@ -154,11 +160,8 @@ const AllListings = () => {
           Find your perfect home with ease.
         </p>
       </Card>
-
-      {/* Search Input */}
       <div className="w-full max-w-md mb-4">
         <Input
-          // placeholder="Search by location, amenities, price"
           placeholder="Search by location, price"
           value={searchTerm}
           onChange={handleSearch}
@@ -166,13 +169,10 @@ const AllListings = () => {
           className="w-full px-4 py-2 border-2 border-blue-500 focus:border-blue-700 rounded-xl transition-all"
         />
       </div>
-
-      {/* Listings Table */}
       <Card
         className="w-full max-w-6xl shadow-md"
         style={{
           background: "rgba(255, 255, 255, 0.9)",
-          backdropFilter: "blur(10px)",
           border: `1px solid ${blueColors.secondary}`,
         }}
       >
@@ -183,10 +183,7 @@ const AllListings = () => {
         ) : (
           <Table
             loading={isFetching}
-            columns={columns.map((column) => ({
-              ...column,
-              align: "center",
-            }))}
+            columns={columns.map((column) => ({ ...column, align: "center" }))}
             dataSource={filteredData}
             pagination={false}
             onChange={onChange}
@@ -211,8 +208,6 @@ const AllListings = () => {
           />
         )}
       </Card>
-
-      {/* Pagination */}
       <div className="mt-4 flex justify-center">
         <Pagination
           current={pagination.current}
@@ -222,7 +217,9 @@ const AllListings = () => {
           showQuickJumper
           responsive
           pageSizeOptions={["5", "10", "15", "20"]}
-          onChange={(page, pageSize) => setPagination({ current: page, pageSize })}
+          onChange={(page, pageSize) =>
+            setPagination({ current: page, pageSize })
+          }
           className="bg-white border border-blue-500 rounded-lg shadow-md px-3 py-1"
         />
       </div>
@@ -230,4 +227,4 @@ const AllListings = () => {
   );
 };
 
-export default AllListings;
+export default DeleteRentalListings;
