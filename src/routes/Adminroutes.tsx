@@ -1,4 +1,5 @@
 import AllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/AllRentalListings";
+import DeleteRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/DeleteRentalListings";
 // import EditRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/EditRentalListings";
 import All_order from "../pages/Dashboard/Admin/manage_order/All_order";
 import Calculate_revenue from "../pages/Dashboard/Admin/manage_order/Calculate_revenue";
@@ -27,6 +28,11 @@ export const adminChildren = [
         name: "Edit Listings",
         path: "edit_listings",
         element: <AllRentalListings />,
+      },
+      {
+        name: "Delete Listings",
+        path: "delete_listings",
+        element: <DeleteRentalListings />,
       },
     ]
   },
