@@ -4,6 +4,7 @@ import UpdateRentalListing from "../pages/Dashboard/Landlord/UpdateRentalListing
 import TenantRequests from "../pages/Dashboard/Landlord/TenantRequests";
 import DeleteMyRentalListing from "../pages/Dashboard/Landlord/DeleteMyRentalListing";
 import UpdateLandlordProfile from "../pages/Dashboard/Landlord/UpdateLandlordProfile";
+import ChangeLandlordPassword from "../pages/Dashboard/Landlord/ChangeLandlordPassword";
 
 export const landlordChildren = [
   {
@@ -38,9 +39,14 @@ export const landlordChildren = [
     element: <TenantRequests />,
   },
   {
-    name: "Update Profile",
+    name: "Update Landlord Profile",
     // path: "update-profile",
     path: "landlord-profile",
     element: <UpdateLandlordProfile />,
+  },
+  {
+    name: "Change Landlord Password",
+    path: "landlord-password",
+    element: <ChangeLandlordPassword />,
   },
 ];

@@ -360,7 +360,7 @@ const rentalManagementApi = baseApi.injectEndpoints({
       query: (passwordData) => {
         return {
           url: "/change-password",
-          method: "PUT",
+          method: "POST",
           body: passwordData,
         };
       },

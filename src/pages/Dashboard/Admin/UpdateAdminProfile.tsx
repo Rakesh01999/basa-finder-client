@@ -3,46 +3,63 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Card, Input, Button, Form, Typography } from "antd";
-import {
-  EyeInvisibleOutlined,
-  EyeOutlined,
-  LockOutlined,
-  KeyOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, HomeOutlined, PhoneOutlined } from "@ant-design/icons";
 import { toast } from "sonner";
-import { useChangePasswordMutation } from "../../../redux/features/auth/authApi";
+import { useUpdateProfileMutation } from "../../../redux/features/auth/authApi";
+import { useAppSelector } from "../../../redux/hooks";
+import { useCurrentUser } from "../../../redux/features/auth/authSlice";
 
-const passwordSchema = z.object({
-  oldPassword: z.string().min(6, "Old password must be at least 6 characters"),
-  newPassword: z.string().min(6, "New password must be at least 6 characters"),
+// Validation Schema
+const profileSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  phone_number: z.string(),
+  // .regex(/^01[3-9]\d{8}$/, "Enter a valid Bangladeshi phone number")
+  // .regex(/^\+?[1-9]\d{1,14}$/, "Enter a valid phone number"), // Supports international formats
+  address: z.string().min(5, "Address must be at least 5 characters"),
 });
 
-type PasswordFormValues = z.infer<typeof passwordSchema>;
+type ProfileFormValues = z.infer<typeof profileSchema>;
 
-const ChangeLandlordPassword = () => {
+const UpdateAdminProfile = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordSchema),
+  } = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
   });
 
-  const [login] = useChangePasswordMutation();
+  type UserType = {
+    _id: string;
+    name: string;
+    email: string;
+    role: "admin" | "landlord" | "tenant";
+    status: string;
+    exp: number;
+    iat: number;
+  };
 
-  const onSubmit = async (data: PasswordFormValues) => {
-    const toastId = toast.loading("Updating Password");
+  const user = useAppSelector(useCurrentUser) as UserType | null;
+  console.log(user);
+
+  const [updateProfile] = useUpdateProfileMutation();
+
+  const onSubmit = async (data: ProfileFormValues) => {
+    const toastId = toast.loading("Updating Profile...");
 
     try {
-      const res = await login(data).unwrap();
+      const res = await updateProfile(data).unwrap();
 
       console.log(res);
-      toast.success("Password changed successfully", {
+      toast.success("Profile updated successfully!", {
         id: toastId,
         duration: 2000,
       });
     } catch (err: any) {
-      toast.error(err?.data?.message, { id: toastId, duration: 5000 });
+      toast.error(err?.data?.message || "Failed to update profile", {
+        id: toastId,
+        duration: 5000,
+      });
     }
   };
 
@@ -74,23 +91,25 @@ const ChangeLandlordPassword = () => {
               background: `linear-gradient(135deg, ${blueColors.primary} 0%, ${blueColors.secondary} 100%)`,
             }}
           >
-            <KeyOutlined className="text-3xl sm:text-4xl text-white" />
+            <UserOutlined className="text-3xl sm:text-4xl text-white" />
           </div>
           <Typography.Title
             level={3}
             className="text-center mb-2 text-2xl sm:text-3xl"
             style={{
+            //   color: blueColors.text.primary,
               color: blueColors.primary,
               letterSpacing: "-0.5px",
             }}
           >
-            Change Password
+            Update Profile
           </Typography.Title>
           <Typography.Text
             className="text-center block text-sm sm:text-base"
+            // style={{ color: blueColors.text.secondary }}
             style={{ color: blueColors.secondary }}
           >
-            Secure your account with a new password
+            Keep your profile up-to-date
           </Typography.Text>
         </div>
 
@@ -99,28 +118,56 @@ const ChangeLandlordPassword = () => {
           onFinish={handleSubmit(onSubmit)}
           className="px-4 sm:px-6"
         >
+          {/* Name Field */}
           <Form.Item
             label={
               <span
                 className="font-medium text-sm sm:text-base"
                 style={{ color: blueColors.primary }}
               >
-                Old Password
+                Full Name
               </span>
             }
-            validateStatus={errors.oldPassword ? "error" : ""}
-            help={errors.oldPassword?.message}
+            validateStatus={errors.name ? "error" : ""}
+            help={errors.name?.message}
           >
             <Controller
-              name="oldPassword"
+              name="name"
               control={control}
               render={({ field }) => (
-                <Input.Password
+                <Input
                   {...field}
-                  prefix={<LockOutlined className="text-gray-400" />}
-                  iconRender={(visible) =>
-                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                  }
+                  prefix={<UserOutlined className="text-gray-400" />}
+                  className="!py-2 !rounded-xl text-sm sm:text-base"
+                  style={{
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
+                  }}
+
+                />
+              )}
+            />
+          </Form.Item>
+
+          {/* Phone Number Field */}
+          <Form.Item
+            label={
+              <span
+                className="font-medium text-sm sm:text-base"
+                style={{ color: blueColors.primary }}
+              >
+                Phone Number
+              </span>
+            }
+            validateStatus={errors.phone_number ? "error" : ""}
+            help={errors.phone_number?.message}
+          >
+            <Controller
+              name="phone_number"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  prefix={<PhoneOutlined className="text-gray-400" />}
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
                     boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
@@ -130,28 +177,26 @@ const ChangeLandlordPassword = () => {
             />
           </Form.Item>
 
+          {/* Address Field */}
           <Form.Item
             label={
               <span
                 className="font-medium text-sm sm:text-base"
                 style={{ color: blueColors.primary }}
               >
-                New Password
+                Address
               </span>
             }
-            validateStatus={errors.newPassword ? "error" : ""}
-            help={errors.newPassword?.message}
+            validateStatus={errors.address ? "error" : ""}
+            help={errors.address?.message}
           >
             <Controller
-              name="newPassword"
+              name="address"
               control={control}
               render={({ field }) => (
-                <Input.Password
+                <Input
                   {...field}
-                  prefix={<LockOutlined className="text-gray-400" />}
-                  iconRender={(visible) =>
-                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                  }
+                  prefix={<HomeOutlined className="text-gray-400" />}
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
                     boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
@@ -161,6 +206,7 @@ const ChangeLandlordPassword = () => {
             />
           </Form.Item>
 
+          {/* Submit Button */}
           <Button
             type="primary"
             htmlType="submit"
@@ -173,21 +219,12 @@ const ChangeLandlordPassword = () => {
               fontSize: "0.875rem",
             }}
           >
-            Update Password
+            Update Profile
           </Button>
         </Form>
-
-        <div className="text-center mt-4 sm:mt-6 px-4 sm:px-6">
-          <Typography.Text
-            className="text-xs sm:text-sm"
-            style={{ color: blueColors.secondary }}
-          >
-            {/* Password must be at least 6 characters long */}
-          </Typography.Text>
-        </div>
       </Card>
     </div>
   );
 };
 
-export default ChangeLandlordPassword;
+export default UpdateAdminProfile;
