@@ -1,4 +1,4 @@
-import AllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/allRentalListings";
+import AllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/AllRentalListings";
 // import EditRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/EditRentalListings";
 import All_order from "../pages/Dashboard/Admin/manage_order/All_order";
 import Calculate_revenue from "../pages/Dashboard/Admin/manage_order/Calculate_revenue";
