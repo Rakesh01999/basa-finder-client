@@ -311,8 +311,10 @@ const rentalManagementApi = baseApi.injectEndpoints({
     updateProfile: builder.mutation({
       query: (profileData) => {
         return {
-          url: "/profile",
-          method: "PUT",
+          // url: "/profile",
+          url: "/update-profile",
+          // method: "PUT",
+          method: "PATCH",
           body: profileData,
         };
       },

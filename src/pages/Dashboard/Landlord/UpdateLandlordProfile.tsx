@@ -6,14 +6,15 @@ import { Card, Input, Button, Form, Typography } from "antd";
 import { UserOutlined, HomeOutlined, PhoneOutlined } from "@ant-design/icons";
 import { toast } from "sonner";
 import { useUpdateProfileMutation } from "../../../redux/features/auth/authApi";
+import { useAppSelector } from "../../../redux/hooks";
+import { useCurrentUser } from "../../../redux/features/auth/authSlice";
 
 // Validation Schema
 const profileSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
-  phone_number: z
-    .string(),
-    // .regex(/^01[3-9]\d{8}$/, "Enter a valid Bangladeshi phone number")
-    // .regex(/^\+?[1-9]\d{1,14}$/, "Enter a valid phone number"), // Supports international formats
+  phone_number: z.string(),
+  // .regex(/^01[3-9]\d{8}$/, "Enter a valid Bangladeshi phone number")
+  // .regex(/^\+?[1-9]\d{1,14}$/, "Enter a valid phone number"), // Supports international formats
   address: z.string().min(5, "Address must be at least 5 characters"),
 });
 
@@ -27,6 +28,19 @@ const UpdateLandlordProfile = () => {
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
   });
+
+  type UserType = {
+    _id: string;
+    name: string;
+    email: string;
+    role: "admin" | "landlord" | "tenant";
+    status: string;
+    exp: number;
+    iat: number;
+  };
+
+  const user = useAppSelector(useCurrentUser) as UserType | null;
+  console.log(user);
 
   const [updateProfile] = useUpdateProfileMutation();
 
@@ -49,16 +63,12 @@ const UpdateLandlordProfile = () => {
     }
   };
 
-  // Teal Theme
-  const tealColors = {
-    primary: "#0F766E",
-    secondary: "#14B8A6",
-    background: "#CCFBF1",
-    text: {
-      primary: "#134E4A",
-      secondary: "#115E59",
-    },
+  const blueColors = {
+    primary: "#1E3A8A", // Deep Blue
+    secondary: "#2563EB", // Vibrant Blue
+    background: "#EFF6FF", // Light Blue
   };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
@@ -71,14 +81,14 @@ const UpdateLandlordProfile = () => {
         style={{
           background: "rgba(255, 255, 255, 0.9)",
           backdropFilter: "blur(10px)",
-          border: `1px solid ${tealColors.secondary}`,
+          border: `1px solid ${blueColors.secondary}`,
         }}
       >
         <div className="text-center mb-6 sm:mb-8">
           <div
             className="mx-auto mb-4 sm:mb-6 w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full shadow-lg"
             style={{
-              background: `linear-gradient(135deg, ${tealColors.primary} 0%, ${tealColors.secondary} 100%)`,
+              background: `linear-gradient(135deg, ${blueColors.primary} 0%, ${blueColors.secondary} 100%)`,
             }}
           >
             <UserOutlined className="text-3xl sm:text-4xl text-white" />
@@ -87,7 +97,8 @@ const UpdateLandlordProfile = () => {
             level={3}
             className="text-center mb-2 text-2xl sm:text-3xl"
             style={{
-              color: tealColors.text.primary,
+            //   color: blueColors.text.primary,
+              color: blueColors.primary,
               letterSpacing: "-0.5px",
             }}
           >
@@ -95,7 +106,8 @@ const UpdateLandlordProfile = () => {
           </Typography.Title>
           <Typography.Text
             className="text-center block text-sm sm:text-base"
-            style={{ color: tealColors.text.secondary }}
+            // style={{ color: blueColors.text.secondary }}
+            style={{ color: blueColors.secondary }}
           >
             Keep your profile up-to-date
           </Typography.Text>
@@ -111,7 +123,7 @@ const UpdateLandlordProfile = () => {
             label={
               <span
                 className="font-medium text-sm sm:text-base"
-                style={{ color: tealColors.text.primary }}
+                style={{ color: blueColors.primary }}
               >
                 Full Name
               </span>
@@ -128,8 +140,9 @@ const UpdateLandlordProfile = () => {
                   prefix={<UserOutlined className="text-gray-400" />}
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
-                    boxShadow: `0 4px 6px rgba(${tealColors.primary}, 0.1)`,
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
                   }}
+
                 />
               )}
             />
@@ -140,7 +153,7 @@ const UpdateLandlordProfile = () => {
             label={
               <span
                 className="font-medium text-sm sm:text-base"
-                style={{ color: tealColors.text.primary }}
+                style={{ color: blueColors.primary }}
               >
                 Phone Number
               </span>
@@ -157,7 +170,7 @@ const UpdateLandlordProfile = () => {
                   prefix={<PhoneOutlined className="text-gray-400" />}
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
-                    boxShadow: `0 4px 6px rgba(${tealColors.primary}, 0.1)`,
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
                   }}
                 />
               )}
@@ -169,7 +182,7 @@ const UpdateLandlordProfile = () => {
             label={
               <span
                 className="font-medium text-sm sm:text-base"
-                style={{ color: tealColors.text.primary }}
+                style={{ color: blueColors.primary }}
               >
                 Address
               </span>
@@ -186,7 +199,7 @@ const UpdateLandlordProfile = () => {
                   prefix={<HomeOutlined className="text-gray-400" />}
                   className="!py-2 !rounded-xl text-sm sm:text-base"
                   style={{
-                    boxShadow: `0 4px 6px rgba(${tealColors.primary}, 0.1)`,
+                    boxShadow: `0 4px 6px rgba(${blueColors.primary}, 0.1)`,
                   }}
                 />
               )}
@@ -200,9 +213,9 @@ const UpdateLandlordProfile = () => {
             block
             className="!rounded-xl !py-3 mt-4 sm:mt-6 transform transition-all hover:scale-105"
             style={{
-              background: `linear-gradient(135deg, ${tealColors.primary} 0%, ${tealColors.secondary} 100%)`,
+              background: `linear-gradient(135deg, ${blueColors.primary} 0%, ${blueColors.secondary} 100%)`,
               border: "none",
-              boxShadow: `0 6px 12px rgba(${tealColors.primary}, 0.25)`,
+              boxShadow: `0 6px 12px rgba(${blueColors.primary}, 0.25)`,
               fontSize: "0.875rem",
             }}
           >
