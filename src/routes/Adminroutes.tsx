@@ -9,6 +9,7 @@ import GetAllCar from "../pages/Dashboard/Admin/manage_product/GetAllCar";
 import UpdateCar from "../pages/Dashboard/Admin/manage_product/UpdateCar";
 import Acctivate_account from "../pages/Dashboard/Admin/manage_user/Acctivate_account";
 import GetAllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/GetAllRentalListings";
+import UpdateAdminProfile from "../pages/Dashboard/Admin/UpdateAdminProfile";
 
 export const adminChildren = [
   {
@@ -82,8 +83,8 @@ export const adminChildren = [
       },
       {
         name: "Update Profile",
-        path: "update-profile",
-        // element: <UpdateProfile />,
+        path: "admin-profile",
+        element: <UpdateAdminProfile />,
       },
     ],
   },
