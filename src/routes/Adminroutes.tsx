@@ -80,6 +80,11 @@ export const adminChildren = [
         path: "total_revenue",
         element: <Calculate_revenue />,
       },
+      {
+        name: "Update Profile",
+        path: "update-profile",
+        // element: <UpdateProfile />,
+      },
     ],
   },
 ];
