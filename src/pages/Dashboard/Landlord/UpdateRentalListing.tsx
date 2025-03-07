@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import {  TQueryParam } from "../../../types";
-import { useGetAllListingsQuery } from "../../../redux/features/rentals/rentalManagementApi";
+// import {  TQueryParam } from "../../../types";
+import {  useGetLandlordListingsQuery } from "../../../redux/features/rentals/rentalManagementApi";
 import {
   Button,
   Input,
@@ -19,11 +19,6 @@ import "../../pagination.css";
 import { useAppSelector } from "../../../redux/hooks";
 import { useCurrentUser } from "../../../redux/features/auth/authSlice";
 
-
-// export type TTableData = Pick<
-//   TRentalListing,
-//   "location" | "rentAmount" | "bedrooms" | "amenities"
-// > & { key: string };
 export type TTableData = {
   key: string;
   location: string;
@@ -33,21 +28,24 @@ export type TTableData = {
 };
 
 
-const AllListings = () => {
-  const [params] = useState<TQueryParam[] | undefined>(undefined);
+const UpdateRentalListing = () => {
+  // const [params] = useState<TQueryParam[] | undefined>(undefined);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredData, setFilteredData] = useState<TTableData[]>([]);
   const navigate = useNavigate();
 
   const user = useAppSelector(useCurrentUser) as UserType | null;
-  
+  console.log(user?._id);
   // Fetch all rental listings
-  const { data: listingsData, isFetching } = useGetAllListingsQuery([
-    ...(params || []),
-    { name: "page", value: pagination.current.toString() },
-    { name: "limit", value: pagination.pageSize.toString() },
-  ]);
+  // const { data: listingsData, isFetching } = useGetAllListingsQuery([
+  //   ...(params || []),
+  //   { name: "page", value: pagination.current.toString() },
+  //   { name: "limit", value: pagination.pageSize.toString() },
+  // ]);
+
+  const {data:listingsData, isFetching} = useGetLandlordListingsQuery(user?._id);
+  console.log(listingsData);
 
   const tableData: TTableData[] | undefined = listingsData?.data?.map(
     ({ _id, location, rentAmount, bedrooms, amenities }) => ({
@@ -245,4 +243,4 @@ const AllListings = () => {
   );
 };
 
-export default AllListings;
+export default UpdateRentalListing;

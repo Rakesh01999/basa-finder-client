@@ -72,7 +72,8 @@ const rentalManagementApi = baseApi.injectEndpoints({
     getLandlordListings: builder.query({
       query: () => {
         return {
-          url: "/landlords/listings",
+          // url: "/landlords/listings",
+          url: "/landlords/landlord/listings",
           method: "GET",
         };
       },
