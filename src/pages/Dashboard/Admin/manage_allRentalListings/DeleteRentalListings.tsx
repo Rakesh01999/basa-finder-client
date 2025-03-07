@@ -141,12 +141,15 @@ const DeleteRentalListings = () => {
   return (
     <div
       className="min-h-screen flex flex-col items-center px-5 py-6"
-      style={{ background: blueColors.background }}
+      style={{
+        background: `linear-gradient(135deg, ${blueColors.background} 0%, ${blueColors.secondary} 100%)`,
+      }}
     >
       <Card
         className="w-full max-w-3xl text-center shadow-lg mb-6"
         style={{
           background: "rgba(255, 255, 255, 0.9)",
+          backdropFilter: "blur(10px)",
           border: `1px solid ${blueColors.secondary}`,
         }}
       >
