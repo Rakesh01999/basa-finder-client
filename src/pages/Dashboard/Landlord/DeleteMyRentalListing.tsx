@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-// import {  TQueryParam } from "../../../types";
-import { useGetLandlordListingsQuery } from "../../../redux/features/rentals/rentalManagementApi";
+// import { TQueryParam } from "../../../../types";
+// import { TQueryParam } from "../../../types";
 import {
+  // useGetAllListingsQuery,
+  useDeleteListingMutation,
+  useGetLandlordListingsQuery,
+} from "../../../redux/features/rentals/rentalManagementApi";
+import {
+  Button,
   Input,
   Table,
   Pagination,
@@ -10,8 +16,15 @@ import {
   type TableProps,
   Card,
   Spin,
+  Modal,
+  message,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+// import { useNavigate } from "react-router-dom";
+import {
+  SearchOutlined,
+  ExclamationCircleOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import "../../pagination.css";
 import { useAppSelector } from "../../../redux/hooks";
 import { useCurrentUser } from "../../../redux/features/auth/authSlice";
@@ -21,47 +34,51 @@ export type TTableData = {
   location: string;
   rentAmount: number;
   bedrooms: number;
-  // amenities: string[]; // ✅ Keep as an array
 };
 
-const MyRentalListings = () => {
+type UserType = {
+  _id: string;
+  name: string;
+  email: string;
+  role: "admin" | "landlord" | "tenant";
+  status: string;
+  exp: number;
+  iat: number;
+};
+
+const DeleteMyRentalListing = () => {
   // const [params] = useState<TQueryParam[] | undefined>(undefined);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredData, setFilteredData] = useState<TTableData[]>([]);
-
   const user = useAppSelector(useCurrentUser) as UserType | null;
-  
-  // Fetch all rental listings
+  const { data: listingsData, isFetching } = useGetLandlordListingsQuery(
+    user?._id
+  );
+  // const navigate = useNavigate();
+  const { confirm } = Modal;
   // const { data: listingsData, isFetching } = useGetAllListingsQuery([
   //   ...(params || []),
   //   { name: "page", value: pagination.current.toString() },
   //   { name: "limit", value: pagination.pageSize.toString() },
   // ]);
-
-  const { data: listingsData, isFetching } = useGetLandlordListingsQuery(
-    user?._id
-  );
-  console.log(listingsData);
+  const [deleteListing] = useDeleteListingMutation();
 
   const tableData: TTableData[] | undefined = listingsData?.data?.map(
-    ({ _id, location, rentAmount, bedrooms, amenities,description }) => ({
+    ({ _id, location, rentAmount, bedrooms, amenities }) => ({
       key: _id,
       location,
       rentAmount,
       bedrooms,
       amenities: amenities.join(", "),
-      description,
     })
   );
 
-  // **Real-time Filtering on Search**
   useEffect(() => {
     if (searchTerm) {
       const filtered = tableData?.filter(
         (item) =>
           item.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          // item.amenities.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.rentAmount.toString().includes(searchTerm)
       );
       setFilteredData(filtered || []);
@@ -70,7 +87,26 @@ const MyRentalListings = () => {
     }
   }, [searchTerm, listingsData]);
 
-  // Table Columns
+  const showDeleteConfirm = (listingId: string) => {
+    confirm({
+      title: "Are you sure you want to delete this listing?",
+      icon: <ExclamationCircleOutlined />,
+      content: "This action cannot be undone.",
+      okText: "Yes, Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      async onOk() {
+        try {
+          await deleteListing({ listingId }).unwrap();
+          message.success("Listing deleted successfully");
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+        } catch (error) {
+          message.error("Failed to delete listing. Please try again.");
+        }
+      },
+    });
+  };
+
   const columns: TableColumnsType<TTableData> = [
     { title: "Location", key: "location", dataIndex: "location" },
     {
@@ -85,47 +121,43 @@ const MyRentalListings = () => {
     },
     { title: "Bedrooms", key: "bedrooms", dataIndex: "bedrooms" },
     { title: "Amenities", key: "amenities", dataIndex: "amenities" },
-    { title: "Description", key: "description", dataIndex: "description" },
-    // {
-    //   title: "Action",
-    //   key: "x",
-    //   render: (record: TTableData) => (
-    //     <Button
-    //       onClick={() => navigate(`/dashboard/edit-listing/${record.key}`)} // 🔹 Ensure it navigates correctly
-    //       className="transition-all duration-300 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
-    //     >
-    //       Edit
-    //     </Button>
-    //   ),
-    // },
+    {
+      title: "Action",
+      key: "actions",
+      render: (record: TTableData) => (
+        <div className="flex gap-2">
+          {/* <Button
+            onClick={() => navigate(`/dashboard/edit-listing/${record.key}`)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
+          >
+            Edit
+          </Button> */}
+          <Button
+            // danger
+            onClick={() => showDeleteConfirm(record.key)}
+            icon={<DeleteOutlined />}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
+          >
+            Delete
+          </Button>
+        </div>
+      ),
+    },
   ];
 
-  // Pagination handler
   const onChange: TableProps<TTableData>["onChange"] = (paginationConfig) => {
     const { current, pageSize } = paginationConfig;
     setPagination({ current: current!, pageSize: pageSize! });
   };
 
-  // Search handler
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  // Blue Theme
   const blueColors = {
-    primary: "#1E3A8A", // Deep Blue
-    secondary: "#2563EB", // Vibrant Blue
-    background: "#EFF6FF", // Light Blue
-  };
-
-  type UserType = {
-    _id: string;
-    name: string;
-    email: string;
-    role: "admin" | "landlord" | "tenant";
-    status: string;
-    exp: number;
-    iat: number;
+    primary: "#1E3A8A",
+    secondary: "#2563EB",
+    background: "#EFF6FF",
   };
 
   return (
@@ -135,7 +167,6 @@ const MyRentalListings = () => {
         background: `linear-gradient(135deg, ${blueColors.background} 0%, ${blueColors.secondary} 100%)`,
       }}
     >
-      {/* Title Card */}
       <Card
         className="w-full max-w-3xl text-center shadow-lg mb-6"
         style={{
@@ -148,17 +179,14 @@ const MyRentalListings = () => {
           className="text-2xl font-semibold text-gray-800"
           style={{ color: blueColors.primary }}
         >
-          My Rental Listings
+          Delete Rental Listings
         </h1>
-        {/* <p className="text-gray-600 text-sm">
-          Find your perfect home with ease.
-        </p> */}
+        <p className="text-gray-600 text-sm">
+          {/* Find your perfect home with ease. */}
+        </p>
       </Card>
-
-      {/* Search Input */}
       <div className="w-full max-w-md mb-4">
         <Input
-          // placeholder="Search by location, amenities, price"
           placeholder="Search by location, price"
           value={searchTerm}
           onChange={handleSearch}
@@ -166,13 +194,10 @@ const MyRentalListings = () => {
           className="w-full px-4 py-2 border-2 border-blue-500 focus:border-blue-700 rounded-xl transition-all"
         />
       </div>
-
-      {/* Listings Table */}
       <Card
         className="w-full max-w-6xl shadow-md"
         style={{
           background: "rgba(255, 255, 255, 0.9)",
-          backdropFilter: "blur(10px)",
           border: `1px solid ${blueColors.secondary}`,
         }}
       >
@@ -183,10 +208,7 @@ const MyRentalListings = () => {
         ) : (
           <Table
             loading={isFetching}
-            columns={columns.map((column) => ({
-              ...column,
-              align: "center",
-            }))}
+            columns={columns.map((column) => ({ ...column, align: "center" }))}
             dataSource={filteredData}
             pagination={false}
             onChange={onChange}
@@ -211,8 +233,6 @@ const MyRentalListings = () => {
           />
         )}
       </Card>
-
-      {/* Pagination */}
       <div className="mt-4 flex justify-center">
         <Pagination
           current={pagination.current}
@@ -232,4 +252,4 @@ const MyRentalListings = () => {
   );
 };
 
-export default MyRentalListings;
+export default DeleteMyRentalListing;

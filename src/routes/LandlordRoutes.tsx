@@ -1,9 +1,9 @@
 import MyRentalListings from "../pages/Dashboard/Landlord/MyRentalListings";
 import CreateRentalListing from "../pages/Dashboard/Landlord/CreateRentalListing";
 import UpdateRentalListing from "../pages/Dashboard/Landlord/UpdateRentalListing";
-import DeleteRentalListing from "../pages/Dashboard/Landlord/DeleteRentalListing";
 import TenantRequests from "../pages/Dashboard/Landlord/TenantRequests";
 import UpdateProfile from "../pages/Dashboard/User/UpdateProfile";
+import DeleteMyRentalListing from "../pages/Dashboard/Landlord/DeleteMyRentalListing";
 
 export const landlordChildren = [
   {
@@ -28,7 +28,7 @@ export const landlordChildren = [
       {
         name: "Delete Listing",
         path: "delete-listing/:listingId",
-        element: <DeleteRentalListing />,
+        element: <DeleteMyRentalListing />,
       },
     ],
   },

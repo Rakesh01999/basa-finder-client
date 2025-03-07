@@ -161,10 +161,10 @@ const UpdateRentalListing = () => {
           className="text-2xl font-semibold text-gray-800"
           style={{ color: blueColors.primary }}
         >
-          Explore Our Rental Listings
+          Update Rental Listings
         </h1>
         <p className="text-gray-600 text-sm">
-          Find your perfect home with ease.
+          {/* Find your perfect home with ease. */}
         </p>
       </Card>
 
