@@ -21,7 +21,8 @@ export const landlordChildren = [
       },
       {
         name: "Update Listing",
-        path: "update-listing/:listingId",
+        // path: "update-listing/:listingId",
+        path: "update-listing",
         element: <UpdateRentalListing />,
       },
       {

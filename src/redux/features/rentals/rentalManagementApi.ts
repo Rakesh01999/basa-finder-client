@@ -108,7 +108,7 @@ const rentalManagementApi = baseApi.injectEndpoints({
           url: "/landlords/listings",
           method: "POST",
           body: {
-            listing: {
+            rentalHouse: {
               location: listingData.location,
               description: listingData.description,
               rentAmount: Number(listingData.rentAmount),
