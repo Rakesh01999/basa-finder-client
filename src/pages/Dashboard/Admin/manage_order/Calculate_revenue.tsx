@@ -1,24 +1,44 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, Statistic, Spin, Typography } from "antd";
-import { useOrderRevenueQuery } from "../../../../redux/features/bikes/bikesManagement";
+import { useCalculateRevenueMutation } from "../../../../redux/features/rentals/rentalManagementApi";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const { Title, Paragraph } = Typography;
 
 const CalculateRevenue = () => {
-  const { data: CarData, isFetching } = useOrderRevenueQuery(undefined);
+  const [calculateRevenue, { data: revenueData, isLoading }] =
+    useCalculateRevenueMutation();
+  const [totalRevenue, setTotalRevenue] = useState<number>(0);
+  console.log(revenueData);
+  // Fetch revenue on component mount
+  useEffect(() => {
+    const fetchRevenue = async () => {
+      try {
+        const result = await calculateRevenue(undefined).unwrap();
+        setTotalRevenue(result?.data?.totalRevenue || 0);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+      } catch (error) {
+        toast.error("Failed to fetch revenue data.");
+      }
+    };
+    fetchRevenue();
+  }, [calculateRevenue]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r p-6 text-center">
+      {/* Header Section */}
       <div className="max-w-lg w-full text-white">
         <Title level={2} className="text-white font-bold drop-shadow-lg">
-          🚴‍♂️ Bike Shop Revenue Dashboard 💰
+          🏠 BasaFinder Revenue Dashboard 💰
         </Title>
         <Paragraph className="text-lg">
-          Welcome to our Bike Shop! Here you can track the **total revenue** 
-          generated from sales. Stay updated with the latest figures and make 
-          informed business decisions.
+          Track your total rental earnings from **BasaFinder**. Stay updated
+          with the latest revenue figures and make informed business decisions.
         </Paragraph>
       </div>
 
+      {/* Revenue Display Card */}
       <Card
         className="mt-6 w-80 shadow-lg rounded-2xl border-none bg-white transform transition hover:scale-105"
         style={{
@@ -26,15 +46,15 @@ const CalculateRevenue = () => {
           boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
         }}
       >
-        {isFetching ? (
+        {isLoading ? (
           <div className="flex justify-center items-center h-24">
             <Spin size="large" />
           </div>
         ) : (
           <Statistic
-            title="Total Revenue"
-            value={CarData?.data?.totalRevenue || 0}
-            prefix="$"
+            title="Total Rental Revenue"
+            value={totalRevenue}
+            prefix="৳"
             precision={2}
             valueStyle={{
               color: "#16a34a",

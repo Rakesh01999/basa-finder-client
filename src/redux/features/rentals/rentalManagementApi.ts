@@ -365,6 +365,15 @@ const rentalManagementApi = baseApi.injectEndpoints({
         };
       },
     }),
+
+    calculateRevenue: builder.mutation({
+      query: () => {
+        return {
+          url: "/payment/revenue",
+          method: "GET"
+        };
+      },
+    }),
   }),
 });
 
@@ -386,6 +395,7 @@ export const {
   // Payment hooks
   useVerifyPaymentQuery,
   useMakePaymentMutation,
+  useCalculateRevenueMutation,
   
   // Admin hooks
   useGetAllUsersQuery,
