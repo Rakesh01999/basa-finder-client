@@ -10,6 +10,7 @@ import UpdateCar from "../pages/Dashboard/Admin/manage_product/UpdateCar";
 import Acctivate_account from "../pages/Dashboard/Admin/manage_user/Acctivate_account";
 import GetAllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/GetAllRentalListings";
 import UpdateAdminProfile from "../pages/Dashboard/Admin/UpdateAdminProfile";
+import ChangeAdminPassword from "../pages/Dashboard/Admin/ChangeAdminPassword";
 
 export const adminChildren = [
   {
@@ -85,6 +86,11 @@ export const adminChildren = [
         name: "Update Profile",
         path: "admin-profile",
         element: <UpdateAdminProfile />,
+      },
+      {
+        name: "Change Password",
+        path: "admin-password",
+        element: <ChangeAdminPassword />,
       },
     ],
   },
