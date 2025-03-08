@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// import { data } from "react-router-dom";
 import { TQueryParam, TRentalListing, TRentalRequest, TResponseRedux } from "../../../types";
 import { baseApi } from "../../api/baseApi";
 
@@ -87,11 +88,13 @@ const rentalManagementApi = baseApi.injectEndpoints({
     }),
 
     getSingleListing: builder.query({
-      query: (listingId) => {
-        console.log('frmapi-',listingId);
+      query: (id) => {
+        // console.log('frmapi-',listingId);
+        console.log('frmapi-',id);
         return {
           // url: `/listings/${listingId}`,
-          url: `/landlords/listings/${listingId}`,
+          // url: `/landlords/listings/${listingId}`,
+          url: `/landlords/listings/${id}`,
           method: "GET",
         };
       },
@@ -193,11 +196,13 @@ const rentalManagementApi = baseApi.injectEndpoints({
 
     createRentalRequest: builder.mutation({
       query: (requestData) => ({
-        url: "/tenants/requests",
+        // url: "/tenants/requests",
+        url: "/tenants/create",
         method: "POST",
         body: requestData,
       }),
       transformResponse: (response: TResponseRedux<TRentalRequest>) => {
+        console.log(response);
         return {
           data: response.data,
         };

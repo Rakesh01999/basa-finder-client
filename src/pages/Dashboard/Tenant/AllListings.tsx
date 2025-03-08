@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import {  TQueryParam } from "../../../types";
 import {
-  Button,
   Input,
   Table,
   Pagination,
@@ -11,7 +10,6 @@ import {
   Card,
   Spin,
 } from "antd";
-import { useNavigate } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
 import "../../pagination.css";
 import { useGetAllListingsQuery } from "../../../redux/features/rentals/rentalManagementApi";
@@ -34,7 +32,6 @@ const AllListings = () => {
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredData, setFilteredData] = useState<TTableData[]>([]);
-  const navigate = useNavigate();
 
   // Fetch all rental listings
   const { data: listingsData, isFetching } = useGetAllListingsQuery([
@@ -44,12 +41,13 @@ const AllListings = () => {
   ]);
 
   const tableData: TTableData[] | undefined = listingsData?.data?.map(
-    ({ _id, location, rentAmount, bedrooms, amenities }) => ({
+    ({ _id, location, rentAmount, bedrooms, amenities,description }) => ({
       key: _id,
       location,
       rentAmount,
       bedrooms,
       amenities: amenities.join(", "),
+      description,
     })
   );
 
@@ -83,18 +81,20 @@ const AllListings = () => {
     },
     { title: "Bedrooms", key: "bedrooms", dataIndex: "bedrooms" },
     { title: "Amenities", key: "amenities", dataIndex: "amenities" },
-    {
-      title: "Action",
-      key: "x",
-      render: (record: TTableData) => (
-        <Button
-          onClick={() => navigate(`/listings/${record.key}`)}
-          className="transition-all duration-300 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
-        >
-          View
-        </Button>
-      ),
-    },
+    { title: "Description", key: "description", dataIndex: "description" },
+    // {
+    //   title: "Action",
+    //   key: "x",
+    //   render: (record: TTableData) => (
+    //     <Button
+    //       // onClick={() => navigate(`landlords/listings/${record.key}`)}
+    //       onClick={() => navigate(`/${record.key}`)}
+    //       className="transition-all duration-300 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
+    //     >
+    //       View
+    //     </Button>
+    //   ),
+    // },
   ];
 
   // Pagination handler

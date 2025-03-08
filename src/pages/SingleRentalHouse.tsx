@@ -1,175 +1,224 @@
-import { useState } from "react";
-import { Typography, Spin, Button, Rate } from "antd";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useGetSingleCarsQuery } from "../redux/features/bikes/bikesManagement";
-import { ShoppingCart, Heart, Share2, ChevronRight } from "lucide-react";
-import type { Bike } from "../types";
+import {
+  useGetSingleListingQuery,
+  useCreateRentalRequestMutation,
+} from "../redux/features/rentals/rentalManagementApi";
+import {
+  Card,
+  Skeleton,
+  Typography,
+  Carousel,
+  Tag,
+  Button,
+  Divider,
+  Input,
+} from "antd";
+import {
+  HomeOutlined,
+  DollarOutlined,
+  CheckCircleOutlined,
+  MessageOutlined,
+} from "@ant-design/icons";
+import { toast } from "sonner";
+import { useAppSelector } from "../redux/hooks";
+import { useCurrentUser } from "../redux/features/auth/authSlice";
 
 const { Title, Text } = Typography;
+const { TextArea } = Input;
 
-const SingleRentalHouse = () => {
-  const { id } = useParams();
+type UserType = {
+  _id: string;
+  userId: string;
+  name: string;
+  email: string;
+  role: "admin" | "landlord" | "tenant";
+  status: string;
+  exp: number;
+  iat: number;
+};
+
+// Define error type to fix the TypeScript error
+// interface ApiError {
+//   data?: {
+//     message?: string;
+//   };
+//   status?: number;
+//   [key: string]: any; // Allow for other properties that might exist
+// }
+
+// Blue Theme
+const blueColors = {
+  primary: "#1E3A8A",
+  secondary: "#2563EB",
+  background: "#EFF6FF",
+};
+
+const SingleRentalHouse: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: CarData, isFetching } = useGetSingleCarsQuery(id);
-  const [isWishlist, setIsWishlist] = useState(false);
+  const user = useAppSelector(useCurrentUser) as UserType | null;
+  const { data: listingData, isFetching, error } = useGetSingleListingQuery(id);
+  const [createRentalRequest, { isLoading: isRequesting }] =
+    useCreateRentalRequestMutation();
+  const [images, setImages] = useState<string[]>([]);
+  const [message, setMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to fetch rental house details.");
+      navigate("/rental-listings");
+    }
+  }, [error, navigate]);
+
+  useEffect(() => {
+    if (listingData?.data) {
+      setImages(listingData.data.images || []);
+    }
+  }, [listingData]);
 
   if (isFetching) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
-        <Spin size="large" />
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Skeleton active />
       </div>
     );
   }
 
-  if (!CarData || !CarData.data) {
-    return <div className="text-center">No data available</div>;
+  if (!listingData?.data) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Text className="text-lg text-red-500">Listing not found.</Text>
+      </div>
+    );
   }
 
-  const car = Array.isArray(CarData.data)
-    ? CarData.data[0]
-    : (CarData.data as Bike);
+  const { location, description, rentAmount, bedrooms, amenities, landlordId } =
+    listingData.data;
 
-  if (!car) {
-    return <div className="text-center">No bike found</div>;
-  }
+  // Handle Rental Request Submission
+  const handleRentalRequest = async () => {
+    if (!message.trim()) {
+      toast.error("Please enter a message before sending a request.");
+      return;
+    }
 
-  const handleBuyNow = () => {
-    navigate(`/checkout/${car?._id}`);
-  };
+    try {
+      const rentalRequest = {
+        rentalRequest: {
+          rentalHouseId: id,
+          tenantId: user?.userId,
+          landlordId: landlordId,
+          message,
+        },
+      };
 
-  // Teal Color Palette
-  const tealColors = {
-    primary: "#0F766E", // Deep Teal
-    secondary: "#14B8A6", // Bright Teal
-    background: "#ECFDF5", // Light Teal
+      console.log("Sending Rental Request:", rentalRequest);
+      await createRentalRequest(rentalRequest).unwrap();
+      toast.success("Rental request sent successfully!");
+    } catch (error: any) {
+      toast.error(
+        error?.data?.message || "Failed to send rental request."
+      );
+    }
   };
 
   return (
     <div
-      className="min-h-screen bg-gray-50 py-12 px-4"
+      className="flex flex-col items-center justify-center min-h-screen p-6"
       style={{
-        background: `linear-gradient(135deg, ${tealColors.background} 0%, ${tealColors.secondary} 100%)`,
+        background: `linear-gradient(135deg, ${blueColors.background} 0%, ${blueColors.secondary} 100%)`,
       }}
     >
-      <div className="max-w-7xl mx-auto">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 mb-8 text-gray-600">
-          <span>Home</span>
-          <ChevronRight size={16} />
-          <span>All Products</span>
-          <ChevronRight size={16} />
-          <span className="text-blue-600">{car?.brand}</span>
-        </div>
+      {/* Rental House Details Card */}
+      <Card className="w-full max-w-3xl shadow-lg rounded-lg" style={{ backgroundColor: "#f9fafb" }}>
+        {/* Image Carousel */}
+        {images.length > 0 ? (
+          <Carousel autoplay className="mb-6">
+            {images.map((img, index) => (
+              <div key={index} className="flex justify-center">
+                <img
+                  src={img}
+                  alt={`House Image ${index + 1}`}
+                  className="w-full h-64 object-cover rounded-lg"
+                />
+              </div>
+            ))}
+          </Carousel>
+        ) : (
+          <div className="flex justify-center items-center h-64 bg-gray-200 rounded-lg">
+            <Text>No Images Available</Text>
+          </div>
+        )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Image Section */}
-          <div className="space-y-4">
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-              <img
-                alt={car?.brand}
-                src={car?.image}
-                className="w-full h-[400px] object-cover rounded-lg"
-              />
-            </div>
+        {/* Listing Info */}
+        <div className="p-4">
+          <Title level={3} className="text-gray-800">
+            <HomeOutlined className="mr-2 text-blue-500" /> {location}
+          </Title>
+          <Text className="text-gray-600">{description}</Text>
+          <Divider />
+
+          {/* Rent and Bedrooms */}
+          <div className="flex justify-between items-center mb-4">
+            <Text className="text-lg font-semibold text-green-600">
+              <DollarOutlined className="mr-2" /> ৳{rentAmount.toLocaleString()}
+            </Text>
+            <Text className="text-lg font-semibold">
+              🛏 {bedrooms} {bedrooms === 1 ? "Bedroom" : "Bedrooms"}
+            </Text>
           </div>
 
-          {/* Content Section */}
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <Title level={1} className="text-3xl font-bold m-0">
-                {car?.brand} {car?.modelNumber}
-              </Title>
+          {/* Amenities */}
+          <Title level={5} className="text-gray-700">🏠 Amenities</Title>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {amenities.length > 0 ? (
+              amenities.map((amenity: string, index: number) => (
+                <Tag color="blue" key={index}>{amenity}</Tag>
+              ))
+            ) : (
+              <Text>No amenities listed</Text>
+            )}
+          </div>
 
-              <div className="flex items-center gap-4">
-                <Rate disabled defaultValue={4.5} className="text-yellow-400" />
-                <span className="text-gray-500">(150 Reviews)</span>
-              </div>
+          <Divider />
 
-              <div className="flex items-baseline gap-4">
-                <Text className="text-4xl font-bold text-blue-600">
-                  ${car?.price}
-                </Text>
-                <Text className="text-lg text-gray-500 line-through">
-                  ${(car?.price * 1.2).toFixed(2)}
-                </Text>
-                <Text className="text-green-500 font-semibold">20% OFF</Text>
-              </div>
-            </div>
+          {/* Message Input Field */}
+          <Title level={5} className="text-gray-700 flex items-center gap-2">
+            <MessageOutlined className="text-blue-500" />
+            Send a Message to the Landlord
+          </Title>
+          <TextArea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Write your message here..."
+            rows={3}
+            maxLength={500}
+            className="mb-4"
+          />
 
-            <div className="h-px bg-gray-200" />
-
-            <div className="space-y-4">
-              <div>
-                <Text strong className="text-lg block mb-2">
-                  Category
-                </Text>
-                <span className="px-4 py-2 bg-gray-100 rounded-full text-gray-700">
-                  {car?.category}
-                </span>
-              </div>
-
-              <div>
-                <Text strong className="text-lg block mb-2">
-                  Description
-                </Text>
-                <Text className="text-gray-600 leading-relaxed">
-                  {car?.description}
-                </Text>
-              </div>
-
-              <div>
-                <Text strong className="text-lg block mb-2">
-                  Stock Status
-                </Text>
-                <span
-                  className={`px-4 py-2 rounded-full ${
-                    car?.quantity
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {car?.quantity ? `${car.quantity} Available` : "Out of Stock"}
-                </span>
-              </div>
-            </div>
-
-            <div className="h-px bg-gray-200" />
-
-            <div className="flex gap-4">
-              <Button
-                type="primary"
-                size="large"
-                onClick={handleBuyNow}
-                className="flex-1 h-12 bg-blue-600 hover:bg-blue-700 border-none flex items-center justify-center gap-2"
-                icon={<ShoppingCart className="w-5 h-5" />}
-                disabled={!car?.quantity}
-              >
-                Buy Now
-              </Button>
-
-              <Button
-                size="large"
-                onClick={() => setIsWishlist(!isWishlist)}
-                className={`h-12 w-12 flex items-center justify-center ${
-                  isWishlist ? "text-red-500" : "text-gray-500"
-                }`}
-                icon={
-                  <Heart
-                    className="w-5 h-5"
-                    fill={isWishlist ? "currentColor" : "none"}
-                  />
-                }
-              />
-
-              <Button
-                size="large"
-                className="h-12 w-12 flex items-center justify-center text-gray-500"
-                icon={<Share2 className="w-5 h-5" />}
-              />
-            </div>
+          {/* Action Buttons */}
+          <div className="flex justify-between">
+            <Button
+              type="default"
+              onClick={() => navigate("/rental-listings")}
+              className="bg-gray-400 text-white px-4 py-2 rounded-md"
+            >
+              Back to Listings
+            </Button>
+            <Button
+              type="primary"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+              onClick={handleRentalRequest}
+              loading={isRequesting}
+            >
+              <CheckCircleOutlined />
+              Request Rental
+            </Button>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

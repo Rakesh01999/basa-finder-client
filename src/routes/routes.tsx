@@ -17,6 +17,7 @@ import AllListings from "../pages/AllListings";
 import { tenantChildren } from "./TenantRoutes";
 import { landlordChildren } from "./LandlordRoutes";
 import EditRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/EditRentalListings";
+import SingleRentalHouse from "../pages/SingleRentalHouse";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,11 @@ const router = createBrowserRouter([
         // path:`car-detail/:id`,
         path: `products/:id`,
         element: <SingleProduct />,
+      },
+      {
+        // path: `dashboard/landlords/listings/:id`,
+        path: `listings/:id`,
+        element: <SingleRentalHouse />,
       },
       {
         path: `checkout/:id`,
