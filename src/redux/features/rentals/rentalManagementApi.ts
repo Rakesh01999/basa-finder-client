@@ -194,6 +194,21 @@ const rentalManagementApi = baseApi.injectEndpoints({
       providesTags: ["rentalRequests"],
     }),
 
+    getLandlordRequests: builder.query({
+      query: () => ({
+        url: "/landlord/requests",
+        method: "GET",
+      }),
+      transformResponse: (response: TResponseRedux<TRentalRequest[]>) => {
+        return {
+          data: response.data,
+          meta: response.meta,
+        };
+      },
+      providesTags: ["rentalRequests"],
+    }),
+
+  
     createRentalRequest: builder.mutation({
       query: (requestData) => ({
         // url: "/tenants/requests",
@@ -218,8 +233,10 @@ const rentalManagementApi = baseApi.injectEndpoints({
         }
         
         return {
-          url: `/landlords/requests/${requestId}`,
-          method: "PUT",
+          // url: `/landlords/requests/${requestId}`,
+          url: `/requests/${requestId}/status`,
+          // method: "PUT",
+          method: "PATCH",
           body,
         };
       },
@@ -394,6 +411,7 @@ export const {
   // Request hooks
   useGetAllRequestsQuery,
   useGetTenantRequestsQuery,
+  useGetLandlordRequestsQuery,
   useCreateRentalRequestMutation,
   useUpdateRequestStatusMutation,
   
