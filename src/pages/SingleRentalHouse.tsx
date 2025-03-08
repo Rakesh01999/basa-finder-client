@@ -65,7 +65,7 @@ const SingleRentalHouse: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
   const [message, setMessage] = useState<string>("");
 
-  useEffect(() => {
+  useEffect(() => { 
     if (error) {
       toast.error("Failed to fetch rental house details.");
       navigate("/rental-listings");
@@ -96,7 +96,7 @@ const SingleRentalHouse: React.FC = () => {
 
   const { location, description, rentAmount, bedrooms, amenities, landlordId } =
     listingData.data;
-
+console.log(listingData)
   // Handle Rental Request Submission
   const handleRentalRequest = async () => {
     if (!message.trim()) {
@@ -110,6 +110,9 @@ const SingleRentalHouse: React.FC = () => {
           rentalHouseId: id,
           tenantId: user?.userId,
           landlordId: landlordId,
+          rentAmount:rentAmount,
+          location: location,
+          bedrooms:bedrooms,
           message,
         },
       };
