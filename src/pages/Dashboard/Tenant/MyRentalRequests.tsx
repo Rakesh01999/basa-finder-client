@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { useGetTenantRequestsQuery, useMakePaymentMutation } from "../../../redux/features/rentals/rentalManagementApi";
 import { Card, Skeleton, Typography, Tag, Button, Divider, Empty, Modal } from "antd";
-import { HomeOutlined, CheckCircleOutlined, PhoneOutlined, DollarOutlined } from "@ant-design/icons";
+import { HomeOutlined, CheckCircleOutlined, PhoneOutlined, DollarOutlined, CalendarOutlined } from "@ant-design/icons";
 import { toast } from "sonner";
+import dayjs from "dayjs"; // ✅ Format date properly
 
 const { Title, Text } = Typography;
 
@@ -61,7 +62,7 @@ const MyRentalRequests: React.FC = () => {
     try {
       await makePayment({
         requestId: currentRequest._id,
-        amount: currentRequest.rentAmount, // Ensure correct field name from API
+        amount: currentRequest.rentAmount,
       }).unwrap();
 
       toast.success("Payment successful!");
@@ -98,15 +99,38 @@ const MyRentalRequests: React.FC = () => {
           return (
             <Card key={request._id} className="shadow-lg rounded-lg" style={{ backgroundColor: "#f9fafb" }}>
               <div className="p-4">
+                {/* 📌 Rental House Details */}
                 <Title level={4} className="text-gray-800 flex items-center gap-2">
-                  <HomeOutlined className="text-blue-500" /> House ID: {request.rentalHouseId}
+                  <HomeOutlined className="text-blue-500" /> {request.location}
                 </Title>
 
                 <Text className="text-gray-600">{request.message}</Text>
 
                 <Divider />
 
-                {/* Request Status */}
+                {/* 🏠 House Details */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <DollarOutlined className="text-green-500" />
+                    <Text className="font-semibold">৳{request.rentAmount.toLocaleString()}</Text>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    🛏
+                    <Text className="font-semibold">{request.bedrooms} Bedrooms</Text>
+                  </div>
+                </div>
+
+                {/* 📅 Created At */}
+                <div className="flex items-center gap-2 mb-4">
+                  <CalendarOutlined className="text-blue-500" />
+                  <Text className="font-semibold">
+                    Requested on {dayjs(request.createdAt).format("MMMM D, YYYY")}
+                  </Text>
+                </div>
+
+                <Divider />
+
+                {/* ✅ Request Status */}
                 <div className="flex items-center gap-2 mb-4">
                   <Text className="font-semibold">Request Status:</Text>
                   <Tag color={isApproved ? "green" : request.status === "pending" ? "blue" : "red"}>
@@ -138,7 +162,7 @@ const MyRentalRequests: React.FC = () => {
 
                 <Divider />
 
-                {/* Action Buttons */}
+                {/* 🎯 Action Buttons */}
                 <div className="flex flex-col sm:flex-row justify-between gap-3">
                   <Button type="default" className="bg-gray-400 text-white px-4 py-2 rounded-md w-full sm:w-auto">
                     View Details
