@@ -259,7 +259,8 @@ const rentalManagementApi = baseApi.injectEndpoints({
 
     makePayment: builder.mutation({
       query: (paymentData) => ({
-        url: "/payments/process",
+        // url: "/payments/process",
+        url: "/payment/create",
         method: "POST",
         body: paymentData,
       }),

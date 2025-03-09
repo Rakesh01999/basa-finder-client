@@ -52,6 +52,7 @@ const MyRentalRequests: React.FC = () => {
 
   // **🔹 Handle Payment**
   const handleProceedToPayment = (request: any) => {
+    console.log(request);
     setCurrentRequest(request);
     setPaymentModalVisible(true);
   };
@@ -164,9 +165,9 @@ const MyRentalRequests: React.FC = () => {
 
                 {/* 🎯 Action Buttons */}
                 <div className="flex flex-col sm:flex-row justify-between gap-3">
-                  <Button type="default" className="bg-gray-400 text-white px-4 py-2 rounded-md w-full sm:w-auto">
+                  {/* <Button type="default" className="bg-gray-400 text-white px-4 py-2 rounded-md w-full sm:w-auto">
                     View Details
-                  </Button>
+                  </Button> */}
 
                   <Button
                     type="primary"
