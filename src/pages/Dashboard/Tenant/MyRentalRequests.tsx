@@ -1,10 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { useGetTenantRequestsQuery, useMakePaymentMutation } from "../../../redux/features/rentals/rentalManagementApi";
-import { Card, Skeleton, Typography, Tag, Button, Divider, Empty, Modal } from "antd";
-import { HomeOutlined, CheckCircleOutlined, PhoneOutlined, DollarOutlined, CalendarOutlined } from "@ant-design/icons";
+import {
+  useGetTenantRequestsQuery,
+  useMakePaymentMutation,
+} from "../../../redux/features/rentals/rentalManagementApi";
+import {
+  Card,
+  Skeleton,
+  Typography,
+  Tag,
+  Button,
+  Divider,
+  Empty,
+  Modal,
+} from "antd";
+import {
+  HomeOutlined,
+  CheckCircleOutlined,
+  PhoneOutlined,
+  DollarOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons";
 import { toast } from "sonner";
 import dayjs from "dayjs"; // ✅ Format date properly
+import { useAppSelector } from "../../../redux/hooks";
+import { useCurrentUser } from "../../../redux/features/auth/authSlice";
 
 const { Title, Text } = Typography;
 
@@ -16,12 +36,28 @@ const blueColors = {
 };
 
 const MyRentalRequests: React.FC = () => {
-  const { data: rentalRequests, isFetching, error } = useGetTenantRequestsQuery(undefined);
+  const {
+    data: rentalRequests,
+    isFetching,
+    error,
+  } = useGetTenantRequestsQuery(undefined);
   const [makePayment, { isLoading: isPaying }] = useMakePaymentMutation();
   const [requests, setRequests] = useState<any[]>([]);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [currentRequest, setCurrentRequest] = useState<any>(null);
 
+  type UserType = {
+    _id: string;
+    name: string;
+    email: string;
+    role: "admin" | "landlord" | "tenant";
+    status: string;
+    exp: number;
+    iat: number;
+  };
+
+  const user = useAppSelector(useCurrentUser) as UserType | null;
+  console.log('user:',user);
   useEffect(() => {
     if (error) {
       toast.error("Failed to fetch rental requests.");
@@ -52,35 +88,46 @@ const MyRentalRequests: React.FC = () => {
 
   // **🔹 Handle Payment**
   const handleProceedToPayment = (request: any) => {
-    console.log(request);
+    console.log("f-MyRR", request);
     setCurrentRequest(request);
     setPaymentModalVisible(true);
   };
 
   const handleConfirmPayment = async () => {
     if (!currentRequest) return;
-
+    
     try {
-      await makePayment({
+      const paymentData = {
         requestId: currentRequest._id,
+        listingId: currentRequest.rentalHouseId, // ✅ Fix: Ensure listingId is sent
+        tenantEmail: user?.email || "", // ✅ Ensure email is sent
         amount: currentRequest.rentAmount,
-      }).unwrap();
-
+        name: user?.name || "Anonymous", // ✅ Ensure name is sent
+        phone: currentRequest.phone || "N/A", // ✅ Ensure phone is sent
+        address: currentRequest.address || "N/A", // ✅ Ensure address is sent
+      };
+  
+      console.log("Sending Payment Data:", paymentData);
+  
+      await makePayment(paymentData).unwrap();
       toast.success("Payment successful!");
+  
       setRequests((prev) =>
         prev.map((req) =>
-          req._id === currentRequest._id ? { ...req, paymentStatus: "paid" } : req
+          req._id === currentRequest._id
+            ? { ...req, paymentStatus: "paid" }
+            : req
         )
       );
     } catch (error) {
-      toast.error("Payment failed. Please try again.");
-      console.error(error);
+      console.error("Payment Error:", error);
+      toast.error((error as any)?.data?.message || "Payment failed. Please try again.");
     } finally {
       setPaymentModalVisible(false);
       setCurrentRequest(null);
     }
   };
-
+  
   return (
     <div
       className="flex flex-col items-center min-h-screen p-6"
@@ -98,10 +145,17 @@ const MyRentalRequests: React.FC = () => {
           const hasLandlordContact = isApproved && request.landlordPhone;
 
           return (
-            <Card key={request._id} className="shadow-lg rounded-lg" style={{ backgroundColor: "#f9fafb" }}>
+            <Card
+              key={request._id}
+              className="shadow-lg rounded-lg"
+              style={{ backgroundColor: "#f9fafb" }}
+            >
               <div className="p-4">
                 {/* 📌 Rental House Details */}
-                <Title level={4} className="text-gray-800 flex items-center gap-2">
+                <Title
+                  level={4}
+                  className="text-gray-800 flex items-center gap-2"
+                >
                   <HomeOutlined className="text-blue-500" /> {request.location}
                 </Title>
 
@@ -113,11 +167,15 @@ const MyRentalRequests: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div className="flex items-center gap-2">
                     <DollarOutlined className="text-green-500" />
-                    <Text className="font-semibold">৳{request.rentAmount.toLocaleString()}</Text>
+                    <Text className="font-semibold">
+                      ৳{request.rentAmount.toLocaleString()}
+                    </Text>
                   </div>
                   <div className="flex items-center gap-2">
                     🛏
-                    <Text className="font-semibold">{request.bedrooms} Bedrooms</Text>
+                    <Text className="font-semibold">
+                      {request.bedrooms} Bedrooms
+                    </Text>
                   </div>
                 </div>
 
@@ -125,7 +183,8 @@ const MyRentalRequests: React.FC = () => {
                 <div className="flex items-center gap-2 mb-4">
                   <CalendarOutlined className="text-blue-500" />
                   <Text className="font-semibold">
-                    Requested on {dayjs(request.createdAt).format("MMMM D, YYYY")}
+                    Requested on{" "}
+                    {dayjs(request.createdAt).format("MMMM D, YYYY")}
                   </Text>
                 </div>
 
@@ -134,7 +193,15 @@ const MyRentalRequests: React.FC = () => {
                 {/* ✅ Request Status */}
                 <div className="flex items-center gap-2 mb-4">
                   <Text className="font-semibold">Request Status:</Text>
-                  <Tag color={isApproved ? "green" : request.status === "pending" ? "blue" : "red"}>
+                  <Tag
+                    color={
+                      isApproved
+                        ? "green"
+                        : request.status === "pending"
+                        ? "blue"
+                        : "red"
+                    }
+                  >
                     {request.status.toUpperCase()}
                   </Tag>
                 </div>
@@ -143,7 +210,11 @@ const MyRentalRequests: React.FC = () => {
                 {isApproved && (
                   <div className="flex items-center gap-2 mb-4">
                     <Text className="font-semibold">Payment Status:</Text>
-                    <Tag color={request.paymentStatus === "paid" ? "green" : "orange"}>
+                    <Tag
+                      color={
+                        request.paymentStatus === "paid" ? "green" : "orange"
+                      }
+                    >
                       {request.paymentStatus.toUpperCase()}
                     </Tag>
                   </div>
@@ -153,10 +224,14 @@ const MyRentalRequests: React.FC = () => {
                 {hasLandlordContact && (
                   <>
                     <Divider />
-                    <Title level={5} className="text-gray-700">👤 Landlord Contact Info</Title>
+                    <Title level={5} className="text-gray-700">
+                      👤 Landlord Contact Info
+                    </Title>
                     <div className="flex items-center gap-2">
                       <PhoneOutlined className="text-green-500" />
-                      <Text className="font-semibold">{request.landlordPhone}</Text>
+                      <Text className="font-semibold">
+                        {request.landlordPhone}
+                      </Text>
                     </div>
                   </>
                 )}
@@ -180,7 +255,9 @@ const MyRentalRequests: React.FC = () => {
                     onClick={() => handleProceedToPayment(request)}
                   >
                     <CheckCircleOutlined />
-                    {request.paymentStatus === "paid" ? "Payment Completed" : "Proceed to Payment"}
+                    {request.paymentStatus === "paid"
+                      ? "Payment Completed"
+                      : "Proceed to Payment"}
                   </Button>
                 </div>
               </div>
