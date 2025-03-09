@@ -13,6 +13,9 @@ import {
   Divider,
   Empty,
   Modal,
+  Form,
+  Input,
+  Space,
 } from "antd";
 import {
   HomeOutlined,
@@ -20,9 +23,11 @@ import {
   PhoneOutlined,
   DollarOutlined,
   CalendarOutlined,
+  UserOutlined,
+  EnvironmentOutlined,
 } from "@ant-design/icons";
 import { toast } from "sonner";
-import dayjs from "dayjs"; // ✅ Format date properly
+import dayjs from "dayjs";
 import { useAppSelector } from "../../../redux/hooks";
 import { useCurrentUser } from "../../../redux/features/auth/authSlice";
 
@@ -43,8 +48,10 @@ const MyRentalRequests: React.FC = () => {
   } = useGetTenantRequestsQuery(undefined);
   const [makePayment, { isLoading: isPaying }] = useMakePaymentMutation();
   const [requests, setRequests] = useState<any[]>([]);
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [currentRequest, setCurrentRequest] = useState<any>(null);
+  const [form] = Form.useForm();
 
   type UserType = {
     _id: string;
@@ -57,7 +64,7 @@ const MyRentalRequests: React.FC = () => {
   };
 
   const user = useAppSelector(useCurrentUser) as UserType | null;
-  console.log('user:',user);
+
   useEffect(() => {
     if (error) {
       toast.error("Failed to fetch rental requests.");
@@ -69,6 +76,18 @@ const MyRentalRequests: React.FC = () => {
       setRequests(rentalRequests.data);
     }
   }, [rentalRequests]);
+
+  // Initialize form with user data when a request is selected
+  useEffect(() => {
+    if (currentRequest && user) {
+      form.setFieldsValue({
+        name: user.name || "",
+        email: user.email || "",
+        phone: "",
+        address: "",
+      });
+    }
+  }, [currentRequest, user, form]);
 
   if (isFetching) {
     return (
@@ -86,25 +105,46 @@ const MyRentalRequests: React.FC = () => {
     );
   }
 
-  // **🔹 Handle Payment**
+  // Handle initial payment button click - open info form first
   const handleProceedToPayment = (request: any) => {
-    console.log("f-MyRR", request);
     setCurrentRequest(request);
-    setPaymentModalVisible(true);
+    setInfoModalVisible(true);
   };
 
+  // Handle form submission and proceed to payment confirmation
+  const handleInfoSubmit = () => {
+    form.validateFields()
+      .then(values => {
+        // Save form values to current request
+        setCurrentRequest({
+          ...currentRequest,
+          name: values.name,
+          phone: values.phone,
+          address: values.address,
+        });
+        
+        // Close info modal and open payment confirmation
+        setInfoModalVisible(false);
+        setPaymentModalVisible(true);
+      })
+      .catch(errorInfo => {
+        console.log('Form validation failed:', errorInfo);
+      });
+  };
+
+  // Handle final payment confirmation
   const handleConfirmPayment = async () => {
     if (!currentRequest) return;
     
     try {
       const paymentData = {
         requestId: currentRequest._id,
-        listingId: currentRequest.rentalHouseId, // ✅ Fix: Ensure listingId is sent
-        tenantEmail: user?.email || "", // ✅ Ensure email is sent
+        listingId: currentRequest.rentalHouseId,
+        tenantEmail: user?.email || "",
         amount: currentRequest.rentAmount,
-        name: user?.name || "Anonymous", // ✅ Ensure name is sent
-        phone: currentRequest.phone || "N/A", // ✅ Ensure phone is sent
-        address: currentRequest.address || "N/A", // ✅ Ensure address is sent
+        name: currentRequest.name,
+        phone: currentRequest.phone,
+        address: currentRequest.address,
       };
   
       console.log("Sending Payment Data:", paymentData);
@@ -125,6 +165,7 @@ const MyRentalRequests: React.FC = () => {
     } finally {
       setPaymentModalVisible(false);
       setCurrentRequest(null);
+      form.resetFields();
     }
   };
   
@@ -151,7 +192,7 @@ const MyRentalRequests: React.FC = () => {
               style={{ backgroundColor: "#f9fafb" }}
             >
               <div className="p-4">
-                {/* 📌 Rental House Details */}
+                {/* Rental House Details */}
                 <Title
                   level={4}
                   className="text-gray-800 flex items-center gap-2"
@@ -163,7 +204,7 @@ const MyRentalRequests: React.FC = () => {
 
                 <Divider />
 
-                {/* 🏠 House Details */}
+                {/* House Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div className="flex items-center gap-2">
                     <DollarOutlined className="text-green-500" />
@@ -179,7 +220,7 @@ const MyRentalRequests: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 📅 Created At */}
+                {/* Created At */}
                 <div className="flex items-center gap-2 mb-4">
                   <CalendarOutlined className="text-blue-500" />
                   <Text className="font-semibold">
@@ -190,7 +231,7 @@ const MyRentalRequests: React.FC = () => {
 
                 <Divider />
 
-                {/* ✅ Request Status */}
+                {/* Request Status */}
                 <div className="flex items-center gap-2 mb-4">
                   <Text className="font-semibold">Request Status:</Text>
                   <Tag
@@ -206,7 +247,7 @@ const MyRentalRequests: React.FC = () => {
                   </Tag>
                 </div>
 
-                {/* ✅ Show Payment Status Only if Request is Approved */}
+                {/* Show Payment Status Only if Request is Approved */}
                 {isApproved && (
                   <div className="flex items-center gap-2 mb-4">
                     <Text className="font-semibold">Payment Status:</Text>
@@ -220,7 +261,7 @@ const MyRentalRequests: React.FC = () => {
                   </div>
                 )}
 
-                {/* ✅ Show Landlord Contact if Approved & Phone Exists */}
+                {/* Show Landlord Contact if Approved & Phone Exists */}
                 {hasLandlordContact && (
                   <>
                     <Divider />
@@ -238,12 +279,8 @@ const MyRentalRequests: React.FC = () => {
 
                 <Divider />
 
-                {/* 🎯 Action Buttons */}
+                {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row justify-between gap-3">
-                  {/* <Button type="default" className="bg-gray-400 text-white px-4 py-2 rounded-md w-full sm:w-auto">
-                    View Details
-                  </Button> */}
-
                   <Button
                     type="primary"
                     disabled={!isApproved || request.paymentStatus === "paid"}
@@ -266,24 +303,112 @@ const MyRentalRequests: React.FC = () => {
         })}
       </div>
 
-      {/* 🔹 Payment Modal */}
+      {/* Tenant Information Collection Modal */}
+      <Modal
+        title="Your Contact Information"
+        open={infoModalVisible}
+        onOk={handleInfoSubmit}
+        onCancel={() => {
+          setInfoModalVisible(false);
+          setCurrentRequest(null);
+          form.resetFields();
+        }}
+        okText="Continue to Payment"
+      >
+        <div className="py-4">
+          <Text className="block mb-4">
+            Please provide your contact information to complete the rental payment.
+          </Text>
+          <Form
+            form={form}
+            layout="vertical"
+          >
+            <Form.Item
+              name="name"
+              label="Full Name"
+              rules={[{ required: true, message: 'Please enter your full name' }]}
+            >
+              <Input prefix={<UserOutlined />} placeholder="Your full name" />
+            </Form.Item>
+            
+            <Form.Item
+              name="phone"
+              label="Phone Number"
+              rules={[{ required: true, message: 'Please enter your phone number' }]}
+            >
+              <Input prefix={<PhoneOutlined />} placeholder="Your phone number" />
+            </Form.Item>
+            
+            <Form.Item
+              name="address"
+              label="Address"
+              rules={[{ required: true, message: 'Please enter your address' }]}
+            >
+              <Space direction="vertical" className="w-full">
+                <Space className="mb-1">
+                  <EnvironmentOutlined />
+                  <Text>Address details:</Text>
+                </Space>
+                <Input.TextArea
+                  placeholder="Your complete address"
+                  rows={3}
+                />
+              </Space>
+            </Form.Item>
+          </Form>
+        </div>
+      </Modal>
+
+      {/* Payment Confirmation Modal */}
       <Modal
         title="Confirm Payment"
         open={paymentModalVisible}
         onOk={handleConfirmPayment}
-        onCancel={() => setPaymentModalVisible(false)}
+        onCancel={() => {
+          setPaymentModalVisible(false);
+          setCurrentRequest(null);
+        }}
         okText="Pay Now"
         confirmLoading={isPaying}
       >
         <div className="py-4">
-          <Text className="block mb-2">
-            You are about to pay{" "}
-            <span className="font-bold text-lg text-green-600">
-              ৳{currentRequest?.rentAmount?.toLocaleString()}
-            </span>{" "}
-            for rental request.
+          <Title level={5}>Payment Details</Title>
+          <div className="mt-2 mb-4">
+            <div className="flex justify-between mb-2">
+              <Text>Property:</Text>
+              <Text strong>{currentRequest?.location || "Property"}</Text>
+            </div>
+            <div className="flex justify-between mb-2">
+              <Text>Amount:</Text>
+              <Text strong className="text-green-600">
+                ৳{currentRequest?.rentAmount?.toLocaleString()}
+              </Text>
+            </div>
+          </div>
+          
+          <Divider />
+          
+          <Title level={5}>Contact Information</Title>
+          <div className="mt-2">
+            <div className="flex items-center gap-2 mb-2">
+              <UserOutlined />
+              <Text>{currentRequest?.name}</Text>
+            </div>
+            <div className="flex items-center gap-2 mb-2">
+              <PhoneOutlined />
+              <Text>{currentRequest?.phone}</Text>
+            </div>
+            <div className="flex items-center gap-2">
+              <EnvironmentOutlined />
+              <Text>{currentRequest?.address}</Text>
+            </div>
+          </div>
+          
+          <Divider />
+          
+          <Text className="block mt-4">
+            Are you sure you want to proceed with this payment?
           </Text>
-          <Text>Are you sure you want to proceed?</Text>
         </div>
       </Modal>
     </div>
