@@ -190,7 +190,7 @@ const MyRentalRequests: React.FC = () => {
           return (
             <Card
               key={request._id}
-              className="shadow-lg rounded-lg"
+              className="shadow-lg rounded-lg md:text-2xl"
               style={{ backgroundColor: "#f9fafb" }}
             >
               <div className="p-4">
@@ -202,7 +202,7 @@ const MyRentalRequests: React.FC = () => {
                   <HomeOutlined className="text-blue-500" /> {request.location}
                 </Title>
 
-                <Text className="text-gray-600">{request.message}</Text>
+                <Text className="text-gray-600">💬 {request.message}</Text>
 
                 <Divider />
 
