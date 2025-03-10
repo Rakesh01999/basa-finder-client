@@ -10,22 +10,31 @@ import {
   MailOutlined,
   MoneyCollectOutlined,
   SaveOutlined,
-  DeliveredProcedureOutlined,
+  CloseCircleOutlined,
 } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
+// 🎨 **Blue Theme**
+const blueColors = {
+  primary: "#1E3A8A", // Deep Blue
+  secondary: "#2563EB", // Vibrant Blue
+  background: "#EFF6FF", // Light Blue
+};
+
 const VerifyPayment = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
-  const { isLoading, data,  } = useVerifyPaymentQuery(orderId, {
+
+  const { isLoading, data } = useVerifyPaymentQuery(orderId, {
     refetchOnMountOrArgChange: true,
   });
 
+  // ✅ Extract first item from array
   const paymentData = data?.data?.[0];
   const navigate = useNavigate();
 
-  console.log("Payment Verification Data:", data);
+  console.log("Payment Verification Data:", paymentData);
 
   if (isLoading)
     return (
@@ -38,109 +47,106 @@ const VerifyPayment = () => {
     navigate("/");
   };
 
-  // Teal Theme for Styling
-  const tealColors = {
-    primary: "#0F766E",
-    secondary: "#14B8A6",
-    background: "#ECFDF5",
-  };
-
   return (
     <div
       className="min-h-screen flex justify-center items-center p-6"
       style={{
-        background: `linear-gradient(135deg, ${tealColors.background} 0%, ${tealColors.secondary} 100%)`,
+        background: `linear-gradient(135deg, ${blueColors.background} 0%, ${blueColors.secondary} 100%)`,
       }}
     >
       <Card
-        className="w-full max-w-4xl shadow-xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl"
+        className="w-full max-w-3xl shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl border border-blue-300"
         style={{
-          background: "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(10px)",
-          border: `1px solid ${tealColors.secondary}`,
+          background: "white",
         }}
       >
         <div className="text-center mb-6">
           <div
             className="mx-auto mb-4 w-20 h-20 flex items-center justify-center rounded-full shadow-lg"
             style={{
-              background: `linear-gradient(135deg, ${tealColors.primary} 0%, ${tealColors.secondary} 100%)`,
+              background: paymentData?.is_verify ? blueColors.primary : "#DC2626", // Green ✅ if verified, Red ❌ if not
             }}
           >
-            <DeliveredProcedureOutlined className="text-4xl text-white" />
+            {paymentData?.is_verify ? (
+              <CheckCircleOutlined className="text-4xl text-white" />
+            ) : (
+              <CloseCircleOutlined className="text-4xl text-white" />
+            )}
           </div>
-          <Title level={3} style={{ color: tealColors.primary }}>
+          <Title level={3} style={{ color: blueColors.primary }}>
             Payment Verification
           </Title>
-          <Text className="text-gray-600">Review your payment details below.</Text>
+          <Text className="text-gray-600">
+            {paymentData?.is_verify ? "Your payment has been successfully verified!" : "Payment verification failed. Please check your order details."}
+          </Text>
         </div>
 
-        {/* Payment Details */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-800">
-          <div className="flex items-center gap-2">
-            <FileTextOutlined className="text-xl text-teal-500" />
-            <Text className="font-semibold md:text-xl lg:text-2xl">Transaction ID:</Text>
-            <Text className="md:text-xl lg:text-2xl">{paymentData?.transactionId}</Text>
-          </div>
+        {/* 🔹 Payment Details */}
+        {paymentData ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-800 p-4">
+            <div className="flex items-center gap-2">
+              <FileTextOutlined className="text-xl text-blue-500" />
+              <Text className="font-semibold">Transaction ID:</Text>
+              <Text>{paymentData.order_id}</Text>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <HomeOutlined className="text-xl text-teal-500" />
-            <Text className="font-semibold md:text-xl lg:text-2xl">Customer:</Text>
-            <Text className="md:text-xl lg:text-2xl">{paymentData?.tenantName}</Text>
-          </div>
+            <div className="flex items-center gap-2">
+              <HomeOutlined className="text-xl text-blue-500" />
+              <Text className="font-semibold">Customer:</Text>
+              <Text>{paymentData.name}</Text>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <MailOutlined className="text-xl text-teal-500" />
-            <Text className="font-semibold md:text-xl lg:text-2xl">Customer Email:</Text>
-            <Text className="md:text-xl lg:text-2xl">{paymentData?.tenantEmail}</Text>
-          </div>
+            <div className="flex items-center gap-2">
+              <MailOutlined className="text-xl text-blue-500" />
+              <Text className="font-semibold">Email:</Text>
+              <Text>{paymentData.email}</Text>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <CreditCardOutlined className="text-xl text-teal-500" />
-            <Text className="font-semibold md:text-xl lg:text-2xl">Payment Method:</Text>
-            <Text className="md:text-xl lg:text-2xl">{paymentData?.paymentMethod}</Text>
-          </div>
+            <div className="flex items-center gap-2">
+              <CreditCardOutlined className="text-xl text-blue-500" />
+              <Text className="font-semibold">Payment Method:</Text>
+              <Text>{paymentData.method}</Text>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <CheckCircleOutlined
-              className={`text-xl ${
-                paymentData?.isVerified ? "text-green-500" : "text-red-500"
-              }`}
-            />
-            <Text className="font-semibold md:text-xl lg:text-2xl">Payment Status:</Text>
-            <span className="md:text-xl lg:text-2xl">
-              <Text className={paymentData?.isVerified ? "text-green-500" : "text-red-500"}>
-                {paymentData?.isVerified ? "Verified" : "Not Verified"}
+            <div className="flex items-center gap-2">
+              <CheckCircleOutlined className={`text-xl ${paymentData.is_verify ? "text-green-500" : "text-red-500"}`} />
+              <Text className="font-semibold">Payment Status:</Text>
+              <Text className={paymentData.is_verify ? "text-green-500" : "text-red-500"}>
+                {paymentData.is_verify ? "Verified ✅" : "Not Verified ❌"}
               </Text>
-            </span>
-          </div>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <SaveOutlined className="text-xl text-teal-500" />
-            <Text className="font-semibold md:text-xl lg:text-2xl">Invoice No:</Text>
-            <Text className="md:text-xl lg:text-2xl">{paymentData?.invoiceNo}</Text>
-          </div>
+            <div className="flex items-center gap-2">
+              <SaveOutlined className="text-xl text-blue-500" />
+              <Text className="font-semibold">Invoice No:</Text>
+              <Text>{paymentData.invoice_no}</Text>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <DollarOutlined className="text-xl text-teal-500" />
-            <Text className="font-semibold md:text-xl lg:text-2xl">Amount:</Text>
-            <Text className="md:text-xl lg:text-2xl">
-              ৳{paymentData?.amount} {paymentData?.currency}
-            </Text>
-          </div>
+            <div className="flex items-center gap-2">
+              <DollarOutlined className="text-xl text-blue-500" />
+              <Text className="font-semibold">Amount:</Text>
+              <Text className="text-green-600 font-semibold">
+                ৳{paymentData.amount} {paymentData.currency}
+              </Text>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <MoneyCollectOutlined className="text-xl text-teal-500" />
-            <Text className="font-semibold md:text-xl lg:text-2xl">Transaction Status:</Text>
-            <Text className="md:text-xl lg:text-2xl">{paymentData?.transactionStatus}</Text>
+            <div className="flex items-center gap-2">
+              <MoneyCollectOutlined className="text-xl text-blue-500" />
+              <Text className="font-semibold">Transaction Status:</Text>
+              <Text>{paymentData.sp_message}</Text>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="text-center text-red-500 text-lg font-bold p-4">
+            No payment details found. Please check your order ID.
+          </div>
+        )}
 
-        {/* Button */}
-        <div className="mt-6 text-center">
+        {/* 🔹 Button */}
+        <div className="mt-6 text-center pb-4">
           <Button
             onClick={handleHomeRedirect}
-            className="bg-teal-500 hover:bg-teal-700 text-white font-bold md:py-6 px-6 rounded-lg shadow-md transition-all md:text-xl "
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-lg shadow-md transition-all text-lg"
           >
             Go to Home
           </Button>
