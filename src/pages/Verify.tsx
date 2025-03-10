@@ -22,7 +22,7 @@ const VerifyPayment = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const paymentData = data?.data;
+  const paymentData = data?.data?.[0];
   const navigate = useNavigate();
 
   console.log("Payment Verification Data:", data);
