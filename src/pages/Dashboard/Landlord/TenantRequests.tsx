@@ -171,7 +171,8 @@ const LandlordRentalRequests: React.FC = () => {
 
                       <Button
                         type="default"
-                        danger
+                        // danger
+                        // className="bg-red-600 hover:bg-red-700  px-4 py-2 rounded-md flex items-center gap-2 w-full sm:w-auto"
                         className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md flex items-center gap-2 w-full sm:w-auto"
                         onClick={() => handleReject(request._id)}
                       >

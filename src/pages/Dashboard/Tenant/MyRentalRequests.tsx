@@ -113,8 +113,9 @@ const MyRentalRequests: React.FC = () => {
 
   // Handle form submission and proceed to payment confirmation
   const handleInfoSubmit = () => {
-    form.validateFields()
-      .then(values => {
+    form
+      .validateFields()
+      .then((values) => {
         // Save form values to current request
         setCurrentRequest({
           ...currentRequest,
@@ -122,54 +123,54 @@ const MyRentalRequests: React.FC = () => {
           phone: values.phone,
           address: values.address,
         });
-        
+
         // Close info modal and open payment confirmation
         setInfoModalVisible(false);
         setPaymentModalVisible(true);
       })
-      .catch(errorInfo => {
-        console.log('Form validation failed:', errorInfo);
+      .catch((errorInfo) => {
+        console.log("Form validation failed:", errorInfo);
       });
   };
 
-// Handle Payment Confirmation
-const handleConfirmPayment = async () => {
-  if (!currentRequest) return;
+  // Handle Payment Confirmation
+  const handleConfirmPayment = async () => {
+    if (!currentRequest) return;
 
-  try {
-    const paymentData = {
-      requestId: currentRequest._id,
-      listingId: currentRequest.rentalHouseId,
-      tenantEmail: user?.email || "",
-      amount: currentRequest.rentAmount,
-      name: currentRequest.name,
-      phone: currentRequest.phone,
-      address: currentRequest.address,
-      status: "pending", // ✅ Ensure initial payment status is "pending"
-    };
+    try {
+      const paymentData = {
+        requestId: currentRequest._id,
+        listingId: currentRequest.rentalHouseId,
+        tenantEmail: user?.email || "",
+        amount: currentRequest.rentAmount,
+        name: currentRequest.name,
+        phone: currentRequest.phone,
+        address: currentRequest.address,
+        status: "pending", // ✅ Ensure initial payment status is "pending"
+      };
 
-    console.log("Sending Payment Data:", paymentData);
+      console.log("Sending Payment Data:", paymentData);
 
-    const response = await makePayment(paymentData).unwrap();
-    toast.success("Payment initiated successfully!");
+      const response = await makePayment(paymentData).unwrap();
+      toast.success("Payment initiated successfully!");
 
-    // Redirect only if checkout URL exists
-    const checkoutUrl = response?.data?.checkoutUrl;
-    if (typeof checkoutUrl === "string" && checkoutUrl.startsWith("https")) {
-      window.location.href = checkoutUrl;
-    } else {
-      toast.error("Invalid payment URL received.");
+      // Redirect only if checkout URL exists
+      const checkoutUrl = response?.data?.checkoutUrl;
+      if (typeof checkoutUrl === "string" && checkoutUrl.startsWith("https")) {
+        window.location.href = checkoutUrl;
+      } else {
+        toast.error("Invalid payment URL received.");
+      }
+    } catch (err) {
+      toast.error("Payment was not successful.");
+      console.error("Payment error:", err);
+    } finally {
+      setPaymentModalVisible(false);
+      setCurrentRequest(null);
+      form.resetFields();
     }
-  } catch (err) {
-    toast.error("Payment was not successful.");
-    console.error("Payment error:", err);
-  } finally {
-    setPaymentModalVisible(false);
-    setCurrentRequest(null);
-    form.resetFields();
-  }
-};
-  
+  };
+
   return (
     <div
       className="flex flex-col items-center min-h-screen p-6"
@@ -210,7 +211,8 @@ const handleConfirmPayment = async () => {
                   <div className="flex items-center gap-2">
                     <DollarOutlined className="text-green-500" />
                     <Text className="font-semibold">
-                      ৳{request.rentAmount.toLocaleString()}
+                      {/* ৳{request.rentAmount.toLocaleString()} */}
+                      ৳{currentRequest?.rentAmount ? currentRequest.rentAmount.toLocaleString() : "N/A"}
                     </Text>
                   </div>
                   <div className="flex items-center gap-2">
@@ -318,42 +320,44 @@ const handleConfirmPayment = async () => {
       >
         <div className="py-4">
           <Text className="block mb-4">
-            Please provide your contact information to complete the rental payment.
+            Please provide your contact information to complete the rental
+            payment.
           </Text>
-          <Form
-            form={form}
-            layout="vertical"
-          >
+          <Form form={form} layout="vertical">
             <Form.Item
               name="name"
               label="Full Name"
-              rules={[{ required: true, message: 'Please enter your full name' }]}
+              rules={[
+                { required: true, message: "Please enter your full name" },
+              ]}
             >
               <Input prefix={<UserOutlined />} placeholder="Your full name" />
             </Form.Item>
-            
+
             <Form.Item
               name="phone"
               label="Phone Number"
-              rules={[{ required: true, message: 'Please enter your phone number' }]}
+              rules={[
+                { required: true, message: "Please enter your phone number" },
+              ]}
             >
-              <Input prefix={<PhoneOutlined />} placeholder="Your phone number" />
+              <Input
+                prefix={<PhoneOutlined />}
+                placeholder="Your phone number"
+              />
             </Form.Item>
-            
+
             <Form.Item
               name="address"
               label="Address"
-              rules={[{ required: true, message: 'Please enter your address' }]}
+              rules={[{ required: true, message: "Please enter your address" }]}
             >
               <Space direction="vertical" className="w-full">
                 <Space className="mb-1">
                   <EnvironmentOutlined />
                   <Text>Address details:</Text>
                 </Space>
-                <Input.TextArea
-                  placeholder="Your complete address"
-                  rows={3}
-                />
+                <Input.TextArea placeholder="Your complete address" rows={3} />
               </Space>
             </Form.Item>
           </Form>
@@ -382,13 +386,14 @@ const handleConfirmPayment = async () => {
             <div className="flex justify-between mb-2">
               <Text>Amount:</Text>
               <Text strong className="text-green-600">
-                ৳{currentRequest?.rentAmount?.toLocaleString()}
+                {/* ৳{currentRequest?.rentAmount?.toLocaleString()} */}
+                {currentRequest?.rentAmount ? `৳${currentRequest.rentAmount.toLocaleString()}` : "N/A"}
               </Text>
             </div>
           </div>
-          
+
           <Divider />
-          
+
           <Title level={5}>Contact Information</Title>
           <div className="mt-2">
             <div className="flex items-center gap-2 mb-2">
@@ -404,9 +409,9 @@ const handleConfirmPayment = async () => {
               <Text>{currentRequest?.address}</Text>
             </div>
           </div>
-          
+
           <Divider />
-          
+
           <Text className="block mt-4">
             Are you sure you want to proceed with this payment?
           </Text>
