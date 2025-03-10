@@ -132,42 +132,43 @@ const MyRentalRequests: React.FC = () => {
       });
   };
 
-  // Handle final payment confirmation
-  const handleConfirmPayment = async () => {
-    if (!currentRequest) return;
-    
-    try {
-      const paymentData = {
-        requestId: currentRequest._id,
-        listingId: currentRequest.rentalHouseId,
-        tenantEmail: user?.email || "",
-        amount: currentRequest.rentAmount,
-        name: currentRequest.name,
-        phone: currentRequest.phone,
-        address: currentRequest.address,
-      };
-  
-      console.log("Sending Payment Data:", paymentData);
-  
-      await makePayment(paymentData).unwrap();
-      toast.success("Payment successful!");
-  
-      setRequests((prev) =>
-        prev.map((req) =>
-          req._id === currentRequest._id
-            ? { ...req, paymentStatus: "paid" }
-            : req
-        )
-      );
-    } catch (error) {
-      console.error("Payment Error:", error);
-      toast.error((error as any)?.data?.message || "Payment failed. Please try again.");
-    } finally {
-      setPaymentModalVisible(false);
-      setCurrentRequest(null);
-      form.resetFields();
+// Handle Payment Confirmation
+const handleConfirmPayment = async () => {
+  if (!currentRequest) return;
+
+  try {
+    const paymentData = {
+      requestId: currentRequest._id,
+      listingId: currentRequest.rentalHouseId,
+      tenantEmail: user?.email || "",
+      amount: currentRequest.rentAmount,
+      name: currentRequest.name,
+      phone: currentRequest.phone,
+      address: currentRequest.address,
+      status: "pending", // ✅ Ensure initial payment status is "pending"
+    };
+
+    console.log("Sending Payment Data:", paymentData);
+
+    const response = await makePayment(paymentData).unwrap();
+    toast.success("Payment initiated successfully!");
+
+    // Redirect only if checkout URL exists
+    const checkoutUrl = response?.data?.checkoutUrl;
+    if (typeof checkoutUrl === "string" && checkoutUrl.startsWith("https")) {
+      window.location.href = checkoutUrl;
+    } else {
+      toast.error("Invalid payment URL received.");
     }
-  };
+  } catch (err) {
+    toast.error("Payment was not successful.");
+    console.error("Payment error:", err);
+  } finally {
+    setPaymentModalVisible(false);
+    setCurrentRequest(null);
+    form.resetFields();
+  }
+};
   
   return (
     <div

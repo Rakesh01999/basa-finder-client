@@ -78,6 +78,14 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "payment/verify",
+        element: (
+          <ProtectedRoute>
+            <Verify />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   {

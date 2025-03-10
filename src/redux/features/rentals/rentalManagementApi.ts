@@ -249,14 +249,6 @@ const rentalManagementApi = baseApi.injectEndpoints({
     }),
 
     // ============= Payment Endpoints =============
-    verifyPayment: builder.query({
-      query: (requestId) => ({
-        url: "/payments/verify",
-        params: { request_id: requestId },
-        method: "GET",
-      }),
-    }),
-
     makePayment: builder.mutation({
       query: (paymentData) => ({
         // url: "/payments/process",
@@ -271,6 +263,15 @@ const rentalManagementApi = baseApi.injectEndpoints({
         };
       },
       invalidatesTags: ["rentalRequests"],
+    }),
+
+    verifyPayment: builder.query({
+      query: (requestId) => ({
+        url: "/payment/verify",
+        // params: { request_id: requestId },
+        params: { requestId },
+        method: "GET",
+      }),
     }),
 
     // ============= Admin Endpoints =============
