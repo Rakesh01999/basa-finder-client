@@ -5,6 +5,7 @@ import {
   HomeOutlined,
   DollarOutlined,
   BankOutlined,
+  ArrowRightOutlined,
 } from "@ant-design/icons";
 import { useGetAllListingsQuery } from "../redux/features/rentals/rentalManagementApi";
 import { useState, useEffect } from "react";
@@ -24,7 +25,7 @@ const RentalListings = () => {
   }, [listings]);
 
   const handleViewAll = () => {
-    navigate("/all-listings");
+    navigate("/allListings");
   };
 
   // BasaFinder Theme Colors
@@ -41,9 +42,7 @@ const RentalListings = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center px-5 pb-10"
-    >
+    <div className="min-h-screen flex flex-col items-center px-5 pb-10">
       {/* Title Section */}
       <div className="text-center mb-6">
         {/* <h2
@@ -64,7 +63,7 @@ const RentalListings = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-6xl">
-          {displayedListings?.map((property:any) => (
+          {displayedListings?.map((property: any) => (
             <AntCard
               key={property._id}
               hoverable
@@ -83,43 +82,36 @@ const RentalListings = () => {
             >
               <div className="space-y-2 text-sm">
                 <p>
-                  <EnvironmentOutlined 
-                    style={{ color: colors.secondary }} 
-                  />{" "}
+                  <EnvironmentOutlined style={{ color: colors.secondary }} />{" "}
                   <strong>Location:</strong> {property.location}
                 </p>
                 <p>
-                  <HomeOutlined 
-                    style={{ color: colors.secondary }} 
-                  />{" "}
+                  <HomeOutlined style={{ color: colors.secondary }} />{" "}
                   <strong>Bedrooms:</strong> {property.bedrooms}
                 </p>
                 <p>
-                  <DollarOutlined 
-                    style={{ color: colors.secondary }}
-                  />{" "}
+                  <DollarOutlined style={{ color: colors.secondary }} />{" "}
                   <strong>Rent:</strong>{" "}
                   <span style={{ color: colors.primary, fontWeight: "600" }}>
                     ${property.rentAmount.toLocaleString()}/month
                   </span>
                 </p>
                 <p>
-                  <BankOutlined 
-                    style={{ color: colors.secondary }}
-                  />{" "}
-                  <strong>Amenities:</strong> {property.amenities?.slice(0, 2).join(", ")}
+                  <BankOutlined style={{ color: colors.secondary }} />{" "}
+                  <strong>Amenities:</strong>{" "}
+                  {property.amenities?.slice(0, 2).join(", ")}
                   {property.amenities?.length > 2 && "..."}
                 </p>
               </div>
               <Button
                 className="w-full mt-3"
-                style={{ 
+                style={{
                   backgroundColor: colors.secondary,
                   color: colors.text.primary,
                   border: "none",
                   borderRadius: "4px",
                   height: "36px",
-                  fontWeight: "500"
+                  fontWeight: "500",
                 }}
                 onClick={() => navigate(`/listings/${property._id}`)}
               >
@@ -133,7 +125,7 @@ const RentalListings = () => {
       {/* View All Button */}
       {totalListings > 6 && (
         <div className="text-center mt-8">
-          <Button
+          {/* <Button
             style={{
               backgroundColor: colors.primary,
               color: colors.text.primary,
@@ -148,7 +140,14 @@ const RentalListings = () => {
             onClick={handleViewAll}
           >
             View All Rentals
-          </Button>
+          </Button> */}
+          <button
+            onClick={handleViewAll}
+            className="mt-6 px-6 py-3 bg-white text-blue-700 font-bold rounded-full shadow-lg hover:bg-blue-50 transition-all transform hover:scale-105 flex gap-2 hover:gap-4"
+          >
+            <p> View All Rentals</p>
+            <ArrowRightOutlined className="" />
+          </button>
         </div>
       )}
     </div>
