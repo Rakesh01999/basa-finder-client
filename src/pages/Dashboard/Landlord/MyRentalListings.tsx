@@ -163,7 +163,7 @@ const MyRentalListings = () => {
 
       <button
         onClick={handlePostRentalClick}
-        className="my-6 px-6 py-3 bg-white text-blue-700 font-bold rounded-lg shadow-lg hover:bg-blue-50 transition-all transform hover:scale-105 flex gap-2 hover:gap-4"
+        className="my-6 px-6 py-3 bg-white text-blue-700 font-bold rounded-full shadow-lg hover:bg-blue-50 transition-all transform hover:scale-105 flex gap-2 hover:gap-4"
       >
         <p>Post Rental House</p>
         <ArrowRightOutlined className="" />

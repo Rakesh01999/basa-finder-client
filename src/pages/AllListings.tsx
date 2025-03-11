@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import {  TQueryParam } from "../types";
+import { TQueryParam } from "../types";
 import { useGetAllListingsQuery } from "../redux/features/rentals/rentalManagementApi";
 import {
   Button,
   Input,
+  Select,
   Table,
   Pagination,
   type TableColumnsType,
@@ -16,23 +16,29 @@ import { useNavigate } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
 import "./pagination.css";
 
-// export type TTableData = Pick<
-//   TRentalListing,
-//   "location" | "rentAmount" | "bedrooms" | "amenities"
-// > & { key: string };
+// Define Bedroom Filter Options
+const bedroomOptions = [
+  { value: "", label: "All Bedrooms" },
+  { value: "1", label: "1 Bedroom" },
+  { value: "2", label: "2 Bedrooms" },
+  { value: "3", label: "3 Bedrooms" },
+  { value: "4", label: "4+ Bedrooms" },
+];
+
+// Define Data Type
 export type TTableData = {
   key: string;
   location: string;
   rentAmount: number;
   bedrooms: number;
-  // amenities: string[]; // ✅ Keep as an array
+  amenities: string;
 };
-
 
 const AllListings = () => {
   const [params] = useState<TQueryParam[] | undefined>(undefined);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [bedroomFilter, setBedroomFilter] = useState<string>("");
   const [filteredData, setFilteredData] = useState<TTableData[]>([]);
   const navigate = useNavigate();
 
@@ -53,22 +59,30 @@ const AllListings = () => {
     })
   );
 
-  // **Real-time Filtering on Search**
+  // **Enhanced Search & Filter Functionality**
   useEffect(() => {
+    let filtered = tableData || [];
+
     if (searchTerm) {
-      const filtered = tableData?.filter(
+      filtered = filtered.filter(
         (item) =>
-          item.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          // item.amenities.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.rentAmount.toString().includes(searchTerm)
       );
-      setFilteredData(filtered || []);
-    } else {
-      setFilteredData(tableData || []);
     }
-  }, [searchTerm, listingsData]);
 
-  // Table Columns
+    if (bedroomFilter) {
+      filtered = filtered.filter((item) =>
+        bedroomFilter === "4"
+          ? item.bedrooms >= 4
+          : item.bedrooms.toString() === bedroomFilter
+      );
+    }
+
+    setFilteredData(filtered);
+  }, [searchTerm, bedroomFilter, listingsData]);
+
+  // **Table Columns**
   const columns: TableColumnsType<TTableData> = [
     { title: "Location", key: "location", dataIndex: "location" },
     {
@@ -97,22 +111,22 @@ const AllListings = () => {
     },
   ];
 
-  // Pagination handler
+  // **Pagination Handler**
   const onChange: TableProps<TTableData>["onChange"] = (paginationConfig) => {
     const { current, pageSize } = paginationConfig;
     setPagination({ current: current!, pageSize: pageSize! });
   };
 
-  // Search handler
+  // **Search Handler**
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  // Blue Theme
+  // **Theme Colors**
   const blueColors = {
-    primary: "#1E3A8A", // Deep Blue
-    secondary: "#2563EB", // Vibrant Blue
-    background: "#EFF6FF", // Light Blue
+    primary: "#1E3A8A",
+    secondary: "#2563EB",
+    background: "#EFF6FF",
   };
 
   return (
@@ -142,15 +156,26 @@ const AllListings = () => {
         </p>
       </Card>
 
-      {/* Search Input */}
-      <div className="w-full max-w-md mb-4">
+      {/* Search & Filter Inputs */}
+      {/* <div className="w-full max-w-3xl flex flex-col sm:flex-row gap-4 mb-4"> */}
+      <div className="w-full max-w-3xl flex flex-col justify-center items-center gap-4 mb-4">
+        {/* Filter by Bedrooms */}
+        <Select
+          placeholder="Filter by Bedrooms"
+          className="w-full sm:w-1/3 border-2 border-blue-500 rounded-lg"
+          value={bedroomFilter}
+          onChange={(value) => setBedroomFilter(value)}
+          options={bedroomOptions}
+          allowClear
+        />
+
+        {/* Search by Location or Rent Price */}
         <Input
-          // placeholder="Search by location, amenities, price"
-          placeholder="Search by location, price"
+          placeholder="Search by location or price"
           value={searchTerm}
           onChange={handleSearch}
           prefix={<SearchOutlined className="text-blue-500" />}
-          className="w-full px-4 py-2 border-2 border-blue-500 focus:border-blue-700 rounded-xl transition-all"
+          className="w-full sm:w-2/3 px-4 py-2 border-2 border-blue-500 focus:border-blue-700 rounded-xl transition-all"
         />
       </div>
 
@@ -181,6 +206,7 @@ const AllListings = () => {
             className="rounded-lg overflow-hidden"
             components={{
               header: {
+                /* eslint-disable @typescript-eslint/no-explicit-any */
                 cell: (props: any) => (
                   <th
                     {...props}
@@ -209,7 +235,9 @@ const AllListings = () => {
           showQuickJumper
           responsive
           pageSizeOptions={["5", "10", "15", "20"]}
-          onChange={(page, pageSize) => setPagination({ current: page, pageSize })}
+          onChange={(page, pageSize) =>
+            setPagination({ current: page, pageSize })
+          }
           className="bg-white border border-blue-500 rounded-lg shadow-md px-3 py-1"
         />
       </div>
