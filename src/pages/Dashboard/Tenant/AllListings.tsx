@@ -146,7 +146,7 @@ const AllListings = () => {
       <div className="w-full max-w-md mb-4">
         <Input
           // placeholder="Search by location, amenities, price"
-          placeholder="Search by location, price"
+          placeholder="Search by location, rent price"
           value={searchTerm}
           onChange={handleSearch}
           prefix={<SearchOutlined className="text-blue-500" />}

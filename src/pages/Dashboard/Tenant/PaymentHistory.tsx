@@ -64,16 +64,15 @@ const PaymentHistory: React.FC = () => {
     {
       title: "Listing ID",
       key: "listingId",
-      // dataIndex: ["transaction", "id"],
       dataIndex: ["listingId"],
       render: (id) => id || "N/A",
     },
-    {
-      title: "Order ID",
-      key: "orderId",
-      dataIndex: ["transaction", "id"],
-      render: (id) => id || "N/A",
-    },
+    // {
+    //   title: "Order ID",
+    //   key: "orderId",
+    //   dataIndex: ["transaction", "id"],
+    //   render: (id) => id || "N/A",
+    // },
     {
       title: "Amount",
       key: "amount",
