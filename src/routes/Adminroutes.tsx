@@ -11,6 +11,7 @@ import Acctivate_account from "../pages/Dashboard/Admin/manage_user/Acctivate_ac
 import GetAllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/GetAllRentalListings";
 import UpdateAdminProfile from "../pages/Dashboard/Admin/UpdateAdminProfile";
 import ChangeAdminPassword from "../pages/Dashboard/Admin/ChangeAdminPassword";
+import AllPayments from "../pages/Dashboard/Admin/manage_order/AllPayments";
 
 export const adminChildren = [
   {
@@ -69,7 +70,7 @@ export const adminChildren = [
       {
         name: "See all payments",
         path: "all_payments",
-        element: <All_order />,
+        element: <AllPayments />,
       },
       {
         name: "Total Revenue",
