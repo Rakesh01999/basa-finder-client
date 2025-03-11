@@ -4,8 +4,6 @@ import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import Allproduct from "../pages/AllListings";
-import SingleProduct from "../pages/SingleProduct";
-import Buynow from "../pages/Buynow";
 import Verify from "../pages/Verify";
 import About from "../pages/About";
 import Dashboard from "../pages/Dashboard/Dashboard";
@@ -53,22 +51,9 @@ const router = createBrowserRouter([
         element: <EditRentalListings />,
       },
       {
-        // path:`car-detail/:id`,
-        path: `products/:id`,
-        element: <SingleProduct />,
-      },
-      {
         // path: `dashboard/landlords/listings/:id`,
         path: `listings/:id`,
         element: <SingleRentalHouse />,
-      },
-      {
-        path: `checkout/:id`,
-        element: (
-          <ProtectedRoute>
-            <Buynow />
-          </ProtectedRoute>
-        ),
       },
       {
         path: "order/verify",

@@ -2,10 +2,6 @@ import AllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings
 import DeleteRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/DeleteRentalListings";
 // import EditRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/EditRentalListings";
 import Calculate_revenue from "../pages/Dashboard/Admin/all_payment/Calculate_revenue";
-// import CreateCar from "../pages/Dashboard/Admin/manage_product/CreateCar";
-// import DeleteCar from "../pages/Dashboard/Admin/manage_product/DeleteCar";
-// import GetAllCar from "../pages/Dashboard/Admin/manage_product/GetAllCar";
-// import UpdateCar from "../pages/Dashboard/Admin/manage_product/UpdateCar";
 import Acctivate_account from "../pages/Dashboard/Admin/manage_user/Acctivate_account";
 import GetAllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/GetAllRentalListings";
 import UpdateAdminProfile from "../pages/Dashboard/Admin/UpdateAdminProfile";
@@ -14,7 +10,7 @@ import AllPayments from "../pages/Dashboard/Admin/all_payment/AllPayments";
 
 export const adminChildren = [
   {
-    name: "Manage_users",
+    name: "Manage Users",
     path: "manage_users",
     element: <Acctivate_account />,
   },
@@ -38,31 +34,6 @@ export const adminChildren = [
       },
     ]
   },
-  // {
-  //   name: "Manage Product",
-  //   children: [
-  //     {
-  //       name: "Create Bike",
-  //       path: "create_bike",
-  //       element: <CreateCar />,
-  //     },
-  //     {
-  //       name: "See all bikes",
-  //       path: "get_bike",
-  //       element: <GetAllCar />,
-  //     },
-  //     {
-  //       name: "Update Bike",
-  //       path: "update_bike",
-  //       element: <UpdateCar />,
-  //     },
-  //     {
-  //       name: "Delete Bike",
-  //       path: "delete_bike",
-  //       element: <DeleteCar />,
-  //     },
-  //   ],
-  // },
   {
     name: "All Payments",
     children: [
