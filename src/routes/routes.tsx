@@ -17,6 +17,7 @@ import { landlordChildren } from "./LandlordRoutes";
 import EditRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/EditRentalListings";
 import SingleRentalHouse from "../pages/SingleRentalHouse";
 import MyProfile from "../pages/MyProfile";
+import Terms from "../pages/Terms";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
             <Verify />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/terms",
+        element: <Terms />,
       },
     ],
   },
