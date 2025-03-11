@@ -19,7 +19,7 @@ const Swipper: React.FC = () => {
     },
     {
       image: "https://i.postimg.cc/KcKSx6VK/bn2.jpg",
-      overlayText: "Fin your dream home",
+      overlayText: "Find your dream home",
       altText: "Home Slide 2"
     },
     {

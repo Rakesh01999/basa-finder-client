@@ -40,7 +40,7 @@ const EditListing: React.FC = () => {
   const [form] = Form.useForm();
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
-  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [_isUploading, setIsUploading] = useState<boolean>(false);
 
   // Populate form when data is fetched
   useEffect(() => {

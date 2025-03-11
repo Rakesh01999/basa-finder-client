@@ -20,7 +20,7 @@ type TRentalData = {
 
 const GetAllRentalListings: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
-  const [params, setParams] = useState<TQueryParam[] | undefined>(undefined);
+  const [params, _setParams] = useState<TQueryParam[] | undefined>(undefined);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredData, setFilteredData] = useState<TRentalData[]>([]);
