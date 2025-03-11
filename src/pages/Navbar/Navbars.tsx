@@ -41,30 +41,29 @@ const Navbars = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <div className="container mx-auto flex justify-between items-center p-4 max-w-6xl">
-          {/* 🚗 **Logo Section with Hover Animation** */}
+          {/*  **Logo Section with Hover Animation** */}
           <div
             className="flex items-center space-x-4 group cursor-pointer"
             onClick={() => navigate("/")}
           >
-           
-          <img
-            src="https://i.postimg.cc/VNMmf35B/logo.png"
-            alt="Bike"
-            // className="w-16 h-16  border-white/20 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110"
-            className="w-16 h-16 group-hover:scale-270 hover:bg-blue-500"
-          />
-          <span
-            className="text-2xl font-bold tracking-wider transition-all duration-300 group-hover:text-teal-200"
-            style={{ color: colors.text.primary }}
-          >
-            {/* AutoVerse */}
             <img
-              // src="https://i.postimg.cc/3wVbWVM9/logo.png"
-              src="https://i.postimg.cc/8zxTV1kz/lg.png"
+              src="https://i.postimg.cc/VNMmf35B/logo.png"
               alt="Bike"
-              className="md:w-32 w-24"
+              // className="w-16 h-16  border-white/20 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110"
+              className="w-16 h-16 group-hover:scale-270 hover:bg-blue-500"
             />
-          </span>
+            <span
+              className="text-2xl font-bold tracking-wider transition-all duration-300 group-hover:text-teal-200"
+              style={{ color: colors.text.primary }}
+            >
+              {/* AutoVerse */}
+              <img
+                // src="https://i.postimg.cc/3wVbWVM9/logo.png"
+                src="https://i.postimg.cc/8zxTV1kz/lg.png"
+                alt="Bike"
+                className="md:w-32 w-24"
+              />
+            </span>
           </div>
 
           {/* **Desktop Navigation** */}
@@ -75,6 +74,8 @@ const Navbars = ({ children }: { children: React.ReactNode }) => {
               <NavLink href="/dashboard" label="Dashboard" />
               <NavLink href="/about" label="About" />
 
+              {user && <NavLink href="/profile" label="My Profile" />}
+              
               {!user && (
                 <>
                   <NavLink href="/login" label="Login" />
