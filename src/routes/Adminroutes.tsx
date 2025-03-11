@@ -64,11 +64,11 @@ export const adminChildren = [
   //   ],
   // },
   {
-    name: "Manage Order",
+    name: "All Payment History",
     children: [
       {
-        name: "See all order",
-        path: "all_order",
+        name: "See all payments",
+        path: "all_payments",
         element: <All_order />,
       },
       {

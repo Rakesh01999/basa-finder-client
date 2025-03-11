@@ -150,9 +150,9 @@ const MyRentalListings = () => {
         >
           My Rental Listings
         </h1>
-        {/* <p className="text-gray-600 text-sm">
-          Find your perfect home with ease.
-        </p> */}
+        <p className="text-gray-600 text-sm">
+          Landlord's posted rental listings here
+        </p>
       </Card>
 
       {/* Search Input */}

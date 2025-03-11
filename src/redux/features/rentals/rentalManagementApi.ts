@@ -280,6 +280,13 @@ const rentalManagementApi = baseApi.injectEndpoints({
       }),
     }),
 
+    allPayments: builder.query({
+      query: () => ({
+        url: "/payment/",
+        method: "GET",
+      }),
+    }),
+
     // ============= Admin Endpoints =============
     getAllUsers: builder.query({
       query: () => ({
@@ -428,6 +435,7 @@ export const {
   useMakePaymentMutation,
   useCalculateRevenueMutation,
   useMyPaymentQuery,
+  useAllPaymentsQuery,
   
   // Admin hooks
   useGetAllUsersQuery,
