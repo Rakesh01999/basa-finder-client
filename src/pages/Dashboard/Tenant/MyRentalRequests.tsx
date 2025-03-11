@@ -211,8 +211,8 @@ const MyRentalRequests: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <DollarOutlined className="text-green-500" />
                     <Text className="font-semibold">
-                      {/* ৳{request.rentAmount.toLocaleString()} */}
-                      ৳{currentRequest?.rentAmount ? currentRequest.rentAmount.toLocaleString() : "N/A"}
+                      ৳{request.rentAmount.toLocaleString()}
+                      {/* ৳{currentRequest?.rentAmount ? currentRequest.rentAmount.toLocaleString() : "N/A"} */}
                     </Text>
                   </div>
                   <div className="flex items-center gap-2">
