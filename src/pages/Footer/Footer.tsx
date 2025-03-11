@@ -9,7 +9,8 @@ import {
   FaPaperPlane,
   FaHome,
   FaUsers,
-  FaQuestionCircle
+  FaQuestionCircle,
+  FaList,
 } from "react-icons/fa";
 
 // Color Theme
@@ -28,7 +29,7 @@ const Footer: React.FC = () => {
 
   const quickLinks = [
     { title: 'Home', href: '/', icon: FaHome },
-    { title: 'Listings', href: '/all-listings', icon: FaHome },
+    { title: 'Listings', href: '/all-listings', icon: FaList },
     { title: 'About Us', href: '/about', icon: FaUsers },
     { title: 'Help', href: '/help', icon: FaQuestionCircle }
   ];

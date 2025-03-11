@@ -42,11 +42,11 @@ const RentalListings = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center px-5 py-10"
+      className="min-h-screen flex flex-col items-center px-5 pb-10"
     >
       {/* Title Section */}
       <div className="text-center mb-6">
-        <h2
+        {/* <h2
           className="text-3xl font-bold"
           style={{ color: colors.primary }}
         >
@@ -54,7 +54,7 @@ const RentalListings = () => {
         </h2>
         <p className="text-gray-600 text-sm">
           Find your perfect rental home in prime locations
-        </p>
+        </p> */}
       </div>
 
       {/* Loader while fetching */}

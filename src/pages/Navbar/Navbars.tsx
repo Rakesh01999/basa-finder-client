@@ -75,7 +75,7 @@ const Navbars = ({ children }: { children: React.ReactNode }) => {
               <NavLink href="/about" label="About" />
 
               {user && <NavLink href="/profile" label="My Profile" />}
-              
+
               {!user && (
                 <>
                   <NavLink href="/login" label="Login" />
@@ -131,6 +131,8 @@ const Navbars = ({ children }: { children: React.ReactNode }) => {
               <MobileNavLink href="/allListings" label="All Rentals" />
               <MobileNavLink href="/dashboard" label="Dashboard" />
               <MobileNavLink href="/about" label="About" />
+
+              {user && <MobileNavLink href="/profile" label="My Profile" />}
 
               {!user && (
                 <>

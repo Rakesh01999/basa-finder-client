@@ -11,10 +11,11 @@ import {
   Card,
   Spin,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, SearchOutlined } from "@ant-design/icons";
 import "../../pagination.css";
 import { useAppSelector } from "../../../redux/hooks";
 import { useCurrentUser } from "../../../redux/features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export type TTableData = {
   key: string;
@@ -31,7 +32,7 @@ const MyRentalListings = () => {
   const [filteredData, setFilteredData] = useState<TTableData[]>([]);
 
   const user = useAppSelector(useCurrentUser) as UserType | null;
-  
+  const navigate = useNavigate();
   // Fetch all rental listings
   // const { data: listingsData, isFetching } = useGetAllListingsQuery([
   //   ...(params || []),
@@ -45,7 +46,7 @@ const MyRentalListings = () => {
   console.log(listingsData);
 
   const tableData: TTableData[] | undefined = listingsData?.data?.map(
-    ({ _id, location, rentAmount, bedrooms, amenities,description }) => ({
+    ({ _id, location, rentAmount, bedrooms, amenities, description }) => ({
       key: _id,
       location,
       rentAmount,
@@ -128,6 +129,11 @@ const MyRentalListings = () => {
     iat: number;
   };
 
+  // Function to handle the CTA button click
+  const handlePostRentalClick = () => {
+    navigate("/dashboard/create-listing");
+  };
+
   return (
     <div
       className="min-h-screen flex flex-col items-center px-5 py-6"
@@ -154,6 +160,14 @@ const MyRentalListings = () => {
           Landlord's posted rental listings here
         </p>
       </Card>
+
+      <button
+        onClick={handlePostRentalClick}
+        className="my-6 px-6 py-3 bg-white text-blue-700 font-bold rounded-lg shadow-lg hover:bg-blue-50 transition-all transform hover:scale-105 flex gap-2 hover:gap-4"
+      >
+        <p>Post Rental House</p>
+        <ArrowRightOutlined className="" />
+      </button>
 
       {/* Search Input */}
       <div className="w-full max-w-md mb-4">
