@@ -5,6 +5,10 @@
 BasaFinder is a **full-stack web application** designed to provide a **smart rental housing solution** that seamlessly connects **landlords** and **tenants** while being managed by an **admin**. It allows landlords to post and manage rental properties, while tenants can search, view, and request rentals. The platform features a **secure authentication system, role-based access, and a smooth payment process** for securing rentals.
 
 ---
+
+## 🔗 **Live-Link**: [BasaFinder Client](https://basa-finder-client.vercel.app/)
+---
+
 ## 🌟 Features & Functionalities
 
 ### **1️⃣ User Roles**
@@ -35,10 +39,6 @@ BasaFinder is a **full-stack web application** designed to provide a **smart ren
 - **Landlord Dashboard**: View listings, manage requests, and approve payments.
 - **Tenant Dashboard**: View requests, check payment status, and track rental approvals.
 
-### **7️⃣ Additional Features**
-- **Email Notifications** for rental approvals and updates.
-- **Profile Management**: Users can update their information and passwords.
-- **Responsive UI** for seamless access across all devices.
 
 ---
 ## 🛠️ Tech Stack
@@ -153,10 +153,6 @@ npm run start
 - 🔹 **AI-powered rental recommendations**
 - 🔹 **Google Maps integration for precise rental locations**
 - 🔹 **In-app messaging between tenants & landlords**
-
----
-## 🤝 Contributing
-We welcome contributions! Feel free to **fork** the repo, make your changes, and submit a **pull request**.
 
 ---
 ## 📞 Contact Us
