@@ -3,8 +3,9 @@ import { Card, Typography, Button, Divider, Spin } from "antd";
 // import { useCurrentUser } from "../../redux/features/auth/authSlice";
 import {
   MailOutlined,
-  IdcardOutlined,
   CalendarOutlined,
+  PhoneOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { useAppSelector } from "../redux/hooks";
 import { useCurrentUser } from "../redux/features/auth/authSlice";
@@ -21,6 +22,8 @@ interface UserType {
   status: string;
   exp: number;
   iat: number;
+  address?: string | "N/A";
+  phone_number?: number | "N/A";
 }
 
 // ✅ Blue Theme
@@ -54,7 +57,7 @@ const MyProfile = () => {
         style={{
           background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(10px)",
-          border: `2px solid ${blueColors.primary}`,
+          border: `2px solid ${blueColors.secondary}`,
         }}
       >
         {/* Profile Avatar */}
@@ -84,8 +87,17 @@ const MyProfile = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <IdcardOutlined className="text-lg text-blue-500" />
-            <Text className="font-medium">User ID: {user._id}</Text>
+            <PhoneOutlined className="text-lg text-blue-500" />
+            <Text className="font-medium">
+              Phone Number: {user.phone_number ? user.phone_number : "None"}
+            </Text>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <HomeOutlined className="text-lg text-blue-500" />
+            <Text className="font-medium">
+              Address: {user.address ? user.address : "None"}
+            </Text>
           </div>
 
           <div className="flex items-center gap-3">
