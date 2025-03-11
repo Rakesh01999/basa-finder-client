@@ -73,6 +73,10 @@ const Navbar = () => {
             <NavLink href="/dashboard" label="Dashboard" />
             <NavLink href="/about" label="About" />
 
+            {user && (
+              <NavLink href="/profile" label="My Profile" />
+            )}
+
             {!user && (
               <>
                 <NavLink href="/login" label="Login" />
@@ -131,9 +135,13 @@ const Navbar = () => {
         >
           <div className="container mx-auto p-6 space-y-4">
             <MobileNavLink href="/" label="Home" />
-            <MobileNavLink href="/allRentalListings" label="All Rentals" />
+            <MobileNavLink href="/allListings" label="All Rentals" />
             <MobileNavLink href="/dashboard" label="Dashboard" />
             <MobileNavLink href="/about" label="About" />
+            
+            {user && (
+              <MobileNavLink href="/profile" label="My Profile" />
+            )}
 
             {!user && (
               <>
@@ -182,7 +190,7 @@ const NavLink = ({ href, label }: { href: string; label: string }) => (
   <a
     href={href}
     className="text-base font-medium tracking-wider transition-all duration-300 
-    transform hover:scale-105 hover:text-teal-200 relative group"
+    transform hover:scale-105 hover:text-blue-200 relative group"
     style={{
       color: "white",
     }}

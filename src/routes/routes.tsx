@@ -16,6 +16,7 @@ import { tenantChildren } from "./TenantRoutes";
 import { landlordChildren } from "./LandlordRoutes";
 import EditRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/EditRentalListings";
 import SingleRentalHouse from "../pages/SingleRentalHouse";
+import MyProfile from "../pages/MyProfile";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "about",
         element: <About />,
+      },
+      {
+        path: "profile",
+        element: <MyProfile />,
       },
       {
         path: "register",

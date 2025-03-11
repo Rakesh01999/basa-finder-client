@@ -163,7 +163,7 @@ const NavLink = ({ href, label }: { href: string; label: string }) => (
   <a
     href={href}
     className="text-base font-medium tracking-wider transition-all duration-300 
-    transform hover:scale-105 hover:text-teal-200 relative group text-white"
+    transform hover:scale-105 hover:text-blue-200 relative group text-white"
   >
     {label}
     <span
