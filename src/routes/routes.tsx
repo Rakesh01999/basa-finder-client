@@ -18,6 +18,7 @@ import EditRentalListings from "../pages/Dashboard/Admin/manage_allRentalListing
 import SingleRentalHouse from "../pages/SingleRentalHouse";
 import MyProfile from "../pages/MyProfile";
 import Terms from "../pages/Terms";
+import Privacy from "../pages/Privacy";
 
 const router = createBrowserRouter([
   {
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
       {
         path: "/terms",
         element: <Terms />,
+      },
+      {
+        path: "/privacy",
+        element: <Privacy />,
       },
     ],
   },
