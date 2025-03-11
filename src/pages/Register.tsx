@@ -48,90 +48,104 @@ const Register = () => {
 
   return (
     <div
-      className="flex items-center justify-center h-screen"
+      className="flex flex-col md:flex-row min-h-screen"
       style={{
         background: `linear-gradient(135deg, ${blueColors.background} 0%, ${blueColors.secondary} 100%)`,
       }}
     >
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
-        <h2 className="text-center text-2xl font-bold text-blue-700">
-          Sign Up
-        </h2>
+      {/* ✅ Left Side (Hidden on Small Screens) */}
+      <div className="flex justify-center items-center w-full md:w-1/2 p-6">
+        <div className="w-full max-w-md rounded-lg p-8 ">
+          <h2 className="text-center text-2xl font-bold text-blue-700">
+            Sign Up
+          </h2>
 
-        <PHForm onSubmit={onSubmit} resolver={zodResolver(registrationSchema)}>
-          {/* Name Field */}
-          <PHInput
-            type="text"
-            name="name"
-            label="Name"
-            placeholder="Enter your full name"
-          />
+          <PHForm
+            onSubmit={onSubmit}
+            resolver={zodResolver(registrationSchema)}
+          >
+            {/* Name Field */}
+            <PHInput
+              type="text"
+              name="name"
+              label="Name"
+              placeholder="Enter your full name"
+            />
 
-          {/* Email Field */}
-          <PHInput
-            type="email"
-            name="email"
-            label="Email"
-            placeholder="Enter your email"
-          />
+            {/* Email Field */}
+            <PHInput
+              type="email"
+              name="email"
+              label="Email"
+              placeholder="Enter your email"
+            />
 
-          {/* Password Field */}
-          <PHInput
-            type="password"
-            name="password"
-            label="Password"
-            placeholder="Enter your password"
-          />
+            {/* Password Field */}
+            <PHInput
+              type="password"
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
+            />
 
-          {/* ✅ Fixed: User Role Selection with React Hook Form Controller */}
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700">
-              User Role
+            {/* ✅ User Role Selection */}
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-black">
+                User Role
+              </label>
+              <Controller
+                name="role"
+                defaultValue="tenant"
+                render={({ field }) => (
+                  <Radio.Group {...field} className="mt-2">
+                    <Radio value="tenant" className="text-gray-800">
+                      Tenant
+                    </Radio>
+                    <Radio value="landlord" className="text-gray-800">
+                      Landlord
+                    </Radio>
+                  </Radio.Group>
+                )}
+              />
+            </div>
+
+            {/* Remember Me */}
+            <label className="flex items-center mt-4">
+              <input
+                type="checkbox"
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="ms-2 text-sm text-gray-600">Remember me</span>
             </label>
-            <Controller
-              name="role"
-              defaultValue="tenant" // ✅ Set default role
-              render={({ field }) => (
-                <Radio.Group {...field} className="mt-2">
-                  <Radio value="tenant" className="text-gray-800">
-                    Tenant
-                  </Radio>
-                  <Radio value="landlord" className="text-gray-800">
-                    Landlord
-                  </Radio>
-                </Radio.Group>
-              )}
-            />
+
+            {/* Submit Button */}
+            <div>
+              <button
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white mt-5 shadow-sm hover:bg-blue-700 transition-all"
+              >
+                Sign Up
+              </button>
+            </div>
+          </PHForm>
+
+          {/* Support Information */}
+          <div className="mt-6 text-center">
+            <p className="text-sm font-bold text-gray-600">
+              Need help? Call us at{" "}
+              <span className="font-semibold text-blue-600">01928374658</span>
+            </p>
           </div>
-
-          {/* Remember Me */}
-          <label className="flex items-center mt-4">
-            <input
-              type="checkbox"
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            <span className="ms-2 text-sm text-gray-600">Remember me</span>
-          </label>
-
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white mt-5 shadow-sm hover:bg-blue-700 transition-all"
-            >
-              Sign Up
-            </button>
-          </div>
-        </PHForm>
-
-        {/* Support Information */}
-        <div className="mt-6 text-center">
-          <p className="text-sm font-bold text-gray-600">
-            Need help? Call us at{" "}
-            <span className="font-semibold text-blue-600">01928374658</span>
-          </p>
         </div>
       </div>
+
+      {/* ✅ Right Side (Form Section) */}
+      <div
+        className="hidden md:flex md:w-1/2 bg-cover bg-center"
+        style={{
+          backgroundImage: `url('https://i.postimg.cc/zBmJY9qH/11088893.png')`,
+        }}
+      />
     </div>
   );
 };

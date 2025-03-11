@@ -43,18 +43,23 @@ const Login = () => {
     }
   };
 
-  // Teal Color Palette
-  const tealColors = {
-    primary: "#0F766E", // Deep Teal
-    secondary: "#14B8A6", // Bright Teal
-    background: "#ECFDF5", // Light Teal
-  };
 
+    // Blue Theme
+    // const blueColors = {
+    //   primary: "#1E3A8A", // Deep Blue
+    //   secondary: "#2563EB", // Vibrant Blue
+    //   background: "#EFF6FF", // Light Blue
+    // };
+  
   return (
     <div
       className="flex items-center justify-center h-screen"
       style={{
-        background: `linear-gradient(135deg, ${tealColors.background} 0%, ${tealColors.secondary} 100%)`,
+        // background: `linear-gradient(135deg, ${blueColors.background} 0%, ${blueColors.secondary} 100%)`,
+        backgroundImage: `url('https://i.postimg.cc/BnsH4VQy/3d-rendering-isometric-house.jpg')`,  // ✅ Replace with actual image path
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        
       }}
     >
       <div
@@ -62,7 +67,7 @@ const Login = () => {
       xl:-mt-32 lg:-mt-20 
       "
       >
-        <h2 className="text-center text-2xl font-bold text-teal-700">
+        <h2 className="text-center text-2xl font-bold text-blue-700">
           Sign In
         </h2>
         <PHForm onSubmit={onSubmit} resolver={zodResolver(LoginSchema)}>
@@ -89,7 +94,7 @@ const Login = () => {
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md border border-transparent bg-teal-600 px-4 py-2 text-sm font-medium text-white mt-5 shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white mt-5 shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Sign In
             </button>
@@ -98,7 +103,7 @@ const Login = () => {
         <div className="mt-8 flex justify-center text-center">
           <p className="text-sm font-bold text-gray-600">
             are you not register{" "}
-            <span className="font-semibold text-teal-600">
+            <span className="font-semibold text-blue-600">
               <NavLink to="/register">Sign Up</NavLink>
             </span>
           </p>
