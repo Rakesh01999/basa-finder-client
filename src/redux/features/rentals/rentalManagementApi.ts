@@ -55,7 +55,7 @@ const rentalManagementApi = baseApi.injectEndpoints({
         }
 
         return {
-        //   url: "/listings",
+          //   url: "/listings",
           url: "/landlords/listings",
           method: "GET",
           params: params,
@@ -90,7 +90,7 @@ const rentalManagementApi = baseApi.injectEndpoints({
     getSingleListing: builder.query({
       query: (id) => {
         // console.log('frmapi-',listingId);
-        console.log('frmapi-',id);
+        console.log('frmapi-', id);
         return {
           // url: `/listings/${listingId}`,
           // url: `/landlords/listings/${listingId}`,
@@ -208,7 +208,7 @@ const rentalManagementApi = baseApi.injectEndpoints({
       providesTags: ["rentalRequests"],
     }),
 
-  
+
     createRentalRequest: builder.mutation({
       query: (requestData) => ({
         // url: "/tenants/requests",
@@ -231,7 +231,7 @@ const rentalManagementApi = baseApi.injectEndpoints({
         if (landlordPhone) {
           body.landlordPhone = landlordPhone;
         }
-        
+
         return {
           // url: `/landlords/requests/${requestId}`,
           url: `/requests/${requestId}/status`,
@@ -360,38 +360,46 @@ const rentalManagementApi = baseApi.injectEndpoints({
 
     alluser: builder.query({
       query: () => ({
-          // url: "/alluser",
-          url: "/users",
-          method: "GET",
+        // url: "/alluser",
+        url: "/users",
+        method: "GET",
       }),
       // providesTags: ['tags']
       providesTags: ['users'],
-  }),
+    }),
+
+    getSingleUser: builder.query({
+      query: (id) => ({
+        url: `/${id}`,
+        method: "GET",
+      }),
+      providesTags: ['users'],
+    }),
 
     blockUser: builder.mutation({
       query: (userId) => {
-          console.log(userId.userId)
-          return {
-              url: `/${userId.userId}`,
-              method: "PUT",
-          };
+        console.log(userId.userId)
+        return {
+          url: `/${userId.userId}`,
+          method: "PUT",
+        };
       },
       // invalidatesTags: ["tags"],
       invalidatesTags: ["users"],
-  }),
+    }),
 
     activateUser: builder.mutation({
       query: (userId) => {
-          // console.log(userId)
-          // console.log(userId.userId)
-          return {
-              url: `/${userId.userId}`,
-              method: "PATCH",
-          };
+        // console.log(userId)
+        // console.log(userId.userId)
+        return {
+          url: `/${userId.userId}`,
+          method: "PATCH",
+        };
       },
       // invalidatesTags: ["tags"],
       invalidatesTags: ["users"],
-  }),
+    }),
 
     changePassword: builder.mutation({
       query: (passwordData) => {
@@ -422,32 +430,33 @@ export const {
   useCreateListingMutation,
   useUpdateListingMutation,
   useDeleteListingMutation,
-  
+
   // Request hooks
   useGetAllRequestsQuery,
   useGetTenantRequestsQuery,
   useGetLandlordRequestsQuery,
   useCreateRentalRequestMutation,
   useUpdateRequestStatusMutation,
-  
+
   // Payment hooks
   useVerifyPaymentQuery,
   useMakePaymentMutation,
   useCalculateRevenueMutation,
   useMyPaymentQuery,
   useAllPaymentsQuery,
-  
+
   // Admin hooks
   useGetAllUsersQuery,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
   useAdminUpdateListingMutation,
   useAdminDeleteListingMutation,
-  
+
   // Profile hooks
   useUpdateProfileMutation,
   useChangePasswordMutation,
   useBlockUserMutation,
   useActivateUserMutation,
   useAlluserQuery,
+  useGetSingleUserQuery,
 } = rentalManagementApi;

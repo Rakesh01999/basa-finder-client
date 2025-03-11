@@ -10,12 +10,13 @@ import {
 import { useAppSelector } from "../redux/hooks";
 import { useCurrentUser } from "../redux/features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { useGetSingleUserQuery } from "../redux/features/rentals/rentalManagementApi";
 
 const { Title, Text } = Typography;
 
 // ✅ Define User Type
 interface UserType {
-  _id: string;
+  userId: string;
   name: string;
   email: string;
   role: "admin" | "landlord" | "tenant";
@@ -35,6 +36,9 @@ const blueColors = {
 
 const MyProfile = () => {
   const user = useAppSelector(useCurrentUser) as UserType | null;
+
+  const { data: userData } = useGetSingleUserQuery(user?.userId); // ✅ Fetch full user details
+
   const navigate = useNavigate();
 
   if (!user) {
@@ -89,14 +93,18 @@ const MyProfile = () => {
           <div className="flex items-center gap-3">
             <PhoneOutlined className="text-lg text-blue-500" />
             <Text className="font-medium">
-              Phone Number: {user.phone_number ? user.phone_number : "None"}
+              Phone Number:{" "}
+              {userData?.data.phone_number
+                ? userData?.data.phone_number
+                : "None"}
             </Text>
           </div>
 
           <div className="flex items-center gap-3">
             <HomeOutlined className="text-lg text-blue-500" />
             <Text className="font-medium">
-              Address: {user.address ? user.address : "None"}
+              Address:{" "}
+              {userData?.data.address ? userData?.data.address : "None"}
             </Text>
           </div>
 
