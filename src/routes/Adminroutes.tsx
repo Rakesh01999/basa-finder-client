@@ -1,8 +1,7 @@
 import AllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/AllRentalListings";
 import DeleteRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/DeleteRentalListings";
 // import EditRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/EditRentalListings";
-import All_order from "../pages/Dashboard/Admin/manage_order/All_order";
-import Calculate_revenue from "../pages/Dashboard/Admin/manage_order/Calculate_revenue";
+import Calculate_revenue from "../pages/Dashboard/Admin/all_payment/Calculate_revenue";
 // import CreateCar from "../pages/Dashboard/Admin/manage_product/CreateCar";
 // import DeleteCar from "../pages/Dashboard/Admin/manage_product/DeleteCar";
 // import GetAllCar from "../pages/Dashboard/Admin/manage_product/GetAllCar";
@@ -11,7 +10,7 @@ import Acctivate_account from "../pages/Dashboard/Admin/manage_user/Acctivate_ac
 import GetAllRentalListings from "../pages/Dashboard/Admin/manage_allRentalListings/GetAllRentalListings";
 import UpdateAdminProfile from "../pages/Dashboard/Admin/UpdateAdminProfile";
 import ChangeAdminPassword from "../pages/Dashboard/Admin/ChangeAdminPassword";
-import AllPayments from "../pages/Dashboard/Admin/manage_order/AllPayments";
+import AllPayments from "../pages/Dashboard/Admin/all_payment/AllPayments";
 
 export const adminChildren = [
   {
@@ -65,10 +64,10 @@ export const adminChildren = [
   //   ],
   // },
   {
-    name: "All Payment History",
+    name: "All Payments",
     children: [
       {
-        name: "See all payments",
+        name: "See all payments history",
         path: "all_payments",
         element: <AllPayments />,
       },
