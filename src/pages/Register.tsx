@@ -1,3 +1,4 @@
+import { Controller } from "react-hook-form"; // ✅ Import Controller for controlled components
 import PHForm from "../components/form/PHForm";
 import PHInput from "../components/form/PHInput";
 import { FieldValues } from "react-hook-form";
@@ -28,8 +29,13 @@ const Register = () => {
       toast.success("Signed Up Successfully", { id: toastId, duration: 2000 });
 
       navigate("/");
+      /* eslint-disable @typescript-eslint/no-explicit-any */
     } catch (err: any) {
-      toast.error(err?.data?.message || "Registration failed", { id: toastId, duration: 5000 });
+      toast.error(err?.data?.message || "Registration failed", {
+        id: toastId,
+        duration: 5000,
+      });
+      console.log(err);
     }
   };
 
@@ -47,12 +53,11 @@ const Register = () => {
         background: `linear-gradient(135deg, ${blueColors.background} 0%, ${blueColors.secondary} 100%)`,
       }}
     >
-      <div
-        className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg"
-      >
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
         <h2 className="text-center text-2xl font-bold text-blue-700">
           Sign Up
         </h2>
+
         <PHForm onSubmit={onSubmit} resolver={zodResolver(registrationSchema)}>
           {/* Name Field */}
           <PHInput
@@ -78,13 +83,25 @@ const Register = () => {
             placeholder="Enter your password"
           />
 
-          {/* User Role Selection */}
+          {/* ✅ Fixed: User Role Selection with React Hook Form Controller */}
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700">User Role</label>
-            <Radio.Group name="role" defaultValue="tenant" className="mt-2">
-              <Radio value="tenant" className="text-gray-800">Tenant</Radio>
-              <Radio value="landlord" className="text-gray-800">Landlord</Radio>
-            </Radio.Group>
+            <label className="block text-sm font-medium text-gray-700">
+              User Role
+            </label>
+            <Controller
+              name="role"
+              defaultValue="tenant" // ✅ Set default role
+              render={({ field }) => (
+                <Radio.Group {...field} className="mt-2">
+                  <Radio value="tenant" className="text-gray-800">
+                    Tenant
+                  </Radio>
+                  <Radio value="landlord" className="text-gray-800">
+                    Landlord
+                  </Radio>
+                </Radio.Group>
+              )}
+            />
           </div>
 
           {/* Remember Me */}
@@ -111,9 +128,7 @@ const Register = () => {
         <div className="mt-6 text-center">
           <p className="text-sm font-bold text-gray-600">
             Need help? Call us at{" "}
-            <span className="font-semibold text-blue-600">
-              01928374658
-            </span>
+            <span className="font-semibold text-blue-600">01928374658</span>
           </p>
         </div>
       </div>
