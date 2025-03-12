@@ -194,14 +194,12 @@ const GetAllRentalListings: React.FC = () => {
             View
           </Button>
           {/* If user is a Tenant, show Request button */}
-          <Button
+          {/* <Button
             onClick={() => navigate(`/rental-request/${record.key}`)}
             className="transition-all duration-300 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
-            // Here you would add logic to only show this for Tenants and Available properties
-            // disabled={userRole !== "tenant" || record.status !== "Available"}
           >
             Request
-          </Button>
+          </Button> */}
         </div>
       ),
     },
