@@ -28,3 +28,7 @@ const projectStructure = getStructure(process.cwd());
 fs.writeFileSync("project-structure.txt", projectStructure);
 
 console.log("✅ Project structure saved to project-structure.txt");
+
+// Open package.json and remove "type": "module".
+// npx tsc generateStructure.ts
+// node generateStructure.js  
